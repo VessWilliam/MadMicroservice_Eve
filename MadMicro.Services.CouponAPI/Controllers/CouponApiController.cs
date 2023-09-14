@@ -46,14 +46,100 @@ public class CouponApiController : ControllerBase
         try
         {
             var obj = await _context.Coupons.FirstOrDefaultAsync(c => c.CouponId == id);
-            if (obj != null)
+            if (obj == null)
             {
-                _response.Result = _mapper.Map<CouponDTO>(obj);
+                _response.IsSuccess = false;
+                _response.Message = "No data Valid";
                 return _response;
             }
-            _response.IsSuccess = false;
-            _response.Message = "No data Valid";
+            _response.Result = _mapper.Map<CouponDTO>(obj);
            
+        }
+        catch (Exception ex)
+        {
+            _response.IsSuccess = false;
+            _response.Message = ex.Message;
+        }
+        return _response; 
+    }
+    
+    [HttpGet]
+    [Route("GetByCode/{code}")]
+    public async Task<ResponseDto> GetByCouponCode(string code)
+    {
+        try
+        {
+            var obj = await _context.Coupons.FirstOrDefaultAsync(c => c.CouponCode.ToLower() == code);
+            if (obj == null)
+            {
+                _response.IsSuccess = false;
+                _response.Message = "No data Valid";
+                return _response;
+            }
+            _response.Result = _mapper.Map<CouponDTO>(obj);
+           
+        }
+        catch (Exception ex)
+        {
+            _response.IsSuccess = false;
+            _response.Message = ex.Message;
+        }
+        return _response; 
+    }
+    
+    
+    [HttpPost]
+    public async Task<ResponseDto> CreateNewCoupon([FromBody] CouponDTO couponDTO)
+    {
+        try
+        {
+            var obj = _mapper.Map<Coupon>(couponDTO);           
+            await _context.Coupons.AddAsync(obj);
+            await _context.SaveChangesAsync();
+            _response.Result = _mapper.Map<CouponDTO>(obj);
+
+        }
+        catch (Exception ex)
+        {
+            _response.IsSuccess = false;
+            _response.Message = ex.Message;
+        }
+        return _response; 
+    }
+    
+    [HttpPut]
+    public async Task<ResponseDto> UpdateCoupon([FromBody] CouponDTO couponDTO)
+    {
+        try
+        {
+            var obj = _mapper.Map<Coupon>(couponDTO);           
+             _context.Coupons.Update(obj);
+            await _context.SaveChangesAsync();
+            _response.Result = _mapper.Map<CouponDTO>(obj);
+
+        }
+        catch (Exception ex)
+        {
+            _response.IsSuccess = false;
+            _response.Message = ex.Message;
+        }
+        return _response; 
+    }
+    
+    [HttpDelete]
+    public async Task<ResponseDto> DeleteCoupon(int id)
+    {
+        try
+        {
+            var obj = await _context.Coupons.FirstOrDefaultAsync(c => c.CouponId == id);
+            if (obj == null)
+            {
+                _response.IsSuccess = false;
+                _response.Message = "No data Valid";
+                return _response;
+            }
+            _context.Coupons.Remove(obj);
+            await _context.SaveChangesAsync();
         }
         catch (Exception ex)
         {
