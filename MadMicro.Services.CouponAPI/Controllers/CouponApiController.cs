@@ -12,19 +12,19 @@ namespace MadMicro.Services.CouponAPI.Controllers;
 public class CouponApiController : ControllerBase
 {
     private readonly AppDbContext _context;
-    private ResponseDto _response;
+    private ResponseDTO _response;
     private IMapper _mapper;
 
     public CouponApiController(AppDbContext context, IMapper mapper)
     {
         _context = context;
-        _response = new ResponseDto();
+        _response = new ResponseDTO();
         _mapper = mapper;    
     }
 
     [HttpGet]
 
-    public async Task<ResponseDto> Get()
+    public async Task<ResponseDTO> Get()
     {
         try
         {
@@ -41,7 +41,7 @@ public class CouponApiController : ControllerBase
 
     [HttpGet]
     [Route("{id:int}")]
-    public async Task<ResponseDto> Get(int id)
+    public async Task<ResponseDTO> Get(int id)
     {
         try
         {
@@ -65,7 +65,7 @@ public class CouponApiController : ControllerBase
     
     [HttpGet]
     [Route("GetByCode/{code}")]
-    public async Task<ResponseDto> GetByCouponCode(string code)
+    public async Task<ResponseDTO> GetByCouponCode(string code)
     {
         try
         {
@@ -89,7 +89,7 @@ public class CouponApiController : ControllerBase
     
     
     [HttpPost]
-    public async Task<ResponseDto> CreateNewCoupon([FromBody] CouponDTO couponDTO)
+    public async Task<ResponseDTO> CreateNewCoupon([FromBody] CouponDTO couponDTO)
     {
         try
         {
@@ -108,7 +108,7 @@ public class CouponApiController : ControllerBase
     }
     
     [HttpPut]
-    public async Task<ResponseDto> UpdateCoupon([FromBody] CouponDTO couponDTO)
+    public async Task<ResponseDTO> UpdateCoupon([FromBody] CouponDTO couponDTO)
     {
         try
         {
@@ -127,7 +127,7 @@ public class CouponApiController : ControllerBase
     }
     
     [HttpDelete]
-    public async Task<ResponseDto> DeleteCoupon(int id)
+    public async Task<ResponseDTO> DeleteCoupon(int id)
     {
         try
         {

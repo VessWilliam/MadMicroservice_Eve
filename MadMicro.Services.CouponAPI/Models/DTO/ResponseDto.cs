@@ -1,6 +1,6 @@
 ﻿namespace MadMicro.Services.CouponAPI.Models.DTO;
 
-public class ResponseDto
+public class ResponseDTO
 {
     public object? Result { get; set; } 
 

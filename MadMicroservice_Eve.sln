@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.7.34031.279
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32929.386
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FrontEnd", "FrontEnd", "{CD552E59-F388-40B3-A414-99393D87915F}"
 EndProject
@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integrations", "Integration
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{CD526126-CE2C-4939-85EE-449EC6B537E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MadMicro.Services.CouponAPI", "MadMicro.Services.CouponAPI\MadMicro.Services.CouponAPI.csproj", "{7429AE6F-7C55-4D78-B4EB-B05F1360653A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MadMicro.Services.CouponAPI", "MadMicro.Services.CouponAPI\MadMicro.Services.CouponAPI.csproj", "{7429AE6F-7C55-4D78-B4EB-B05F1360653A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
