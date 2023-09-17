@@ -128,6 +128,7 @@ public class CouponApiController : ControllerBase
     }
     
     [HttpDelete]
+    [Route("{id:int}")]
     public async Task<ResponseDTO> DeleteCoupon(int id)
     {
         try
