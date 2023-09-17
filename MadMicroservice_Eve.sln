@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.32929.386
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FrontEnd", "FrontEnd", "{CD552E59-F388-40B3-A414-99393D87915F}"
 EndProject
@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{CD
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MadMicro.Services.CouponAPI", "MadMicro.Services.CouponAPI\MadMicro.Services.CouponAPI.csproj", "{7429AE6F-7C55-4D78-B4EB-B05F1360653A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MadMicro.Web", "MadMicro.Web\MadMicro.Web.csproj", "{085872D7-9FA7-44E6-BB78-8D1D94901225}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,12 +25,17 @@ Global
 		{7429AE6F-7C55-4D78-B4EB-B05F1360653A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7429AE6F-7C55-4D78-B4EB-B05F1360653A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7429AE6F-7C55-4D78-B4EB-B05F1360653A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{085872D7-9FA7-44E6-BB78-8D1D94901225}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{085872D7-9FA7-44E6-BB78-8D1D94901225}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{085872D7-9FA7-44E6-BB78-8D1D94901225}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{085872D7-9FA7-44E6-BB78-8D1D94901225}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7429AE6F-7C55-4D78-B4EB-B05F1360653A} = {CD526126-CE2C-4939-85EE-449EC6B537E2}
+		{085872D7-9FA7-44E6-BB78-8D1D94901225} = {CD552E59-F388-40B3-A414-99393D87915F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FACC5904-8084-4C9D-8834-8E47AC3988B6}

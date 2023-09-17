@@ -2,6 +2,7 @@
 using MadMicro.Services.CouponAPI.DataContext;
 using MadMicro.Services.CouponAPI.Models;
 using MadMicro.Services.CouponAPI.Models.DTO;
+using MadMicro.Servies.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

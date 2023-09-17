@@ -1,4 +1,4 @@
-﻿namespace MadMicro.Servies.Models.DTO;
+﻿namespace MadMicro.Web.Models;
 
 public class ResponseDTO
 {
