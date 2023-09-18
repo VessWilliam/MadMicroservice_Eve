@@ -21,8 +21,12 @@ namespace MadMicro.Web.Controllers
 
             if (response != null && response.IsSuccess)
             {
-                listOfCoupon = JsonConvert.DeserializeObject<List<CouponDTO>>(Convert.ToString(response.Result));
+                listOfCoupon = JsonConvert.DeserializeObject<List<CouponDTO>>(Convert.ToString(response?.Result));
 
+            }
+            else
+            {
+                TempData["error"] = response?.Message; 
             }
 
             return View(listOfCoupon);
@@ -42,7 +46,12 @@ namespace MadMicro.Web.Controllers
 
                 if (response != null && response.IsSuccess)
                 {
+                    TempData["success"] = "Coupon Created Successful !";    
                     return RedirectToAction(nameof(CouponIndex));
+                }
+                else
+                {
+                    TempData["error"] = response?.Message;
                 }
             }
             return View(model);
@@ -55,11 +64,16 @@ namespace MadMicro.Web.Controllers
 
 			if (response != null && response.IsSuccess)
 			{
-				var model = JsonConvert.DeserializeObject<CouponDTO>(Convert.ToString(response.Result));
+               
+                var model = JsonConvert.DeserializeObject<CouponDTO>(Convert.ToString(response.Result));
                 return View(model); 
 
 			}
-			return NotFound();
+            else
+            {
+                TempData["error"] = response?.Message;
+            }
+            return NotFound();
         }
 
         [HttpPost]
@@ -70,9 +84,14 @@ namespace MadMicro.Web.Controllers
 
 			if (response != null && response.IsSuccess)
 			{
-				return RedirectToAction(nameof(CouponIndex));
+                TempData["success"] = "Coupon Deleted Successful !";
+                return RedirectToAction(nameof(CouponIndex));
 			}
-			return View(couponDTO);
+            else
+            {
+                TempData["error"] = response?.Message;
+            }
+            return View(couponDTO);
         }
 
     }
