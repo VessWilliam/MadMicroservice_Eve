@@ -1,4 +1,5 @@
 using MadMicro.Services.AuthAPI.DataContext;
+using MadMicro.Services.AuthAPI.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,8 +10,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-
-builder.Services.AddIdentity<IdentityUser,IdentityRole>().AddEntityFrameworkStores<AppDbContext>()
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("AppSettings"));
+builder.Services.AddIdentity<AppUser,IdentityRole>().AddEntityFrameworkStores<AppDbContext>()
       .AddDefaultTokenProviders();
 
 builder.Services.AddControllers();

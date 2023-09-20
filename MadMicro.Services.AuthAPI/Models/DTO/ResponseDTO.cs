@@ -1,4 +1,4 @@
-﻿namespace MadMicro.Services.CouponAPI.Models.DTO;
+﻿namespace MadMicro.Services.AuthAPI.Models.DTO;
 
 public class ResponseDTO
 {
