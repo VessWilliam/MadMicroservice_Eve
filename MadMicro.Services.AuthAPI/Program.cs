@@ -1,5 +1,7 @@
 using MadMicro.Services.AuthAPI.DataContext;
 using MadMicro.Services.AuthAPI.Models;
+using MadMicro.Services.AuthAPI.Service;
+using MadMicro.Services.AuthAPI.Service.IService;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,7 +17,9 @@ builder.Services.AddIdentity<AppUser,IdentityRole>().AddEntityFrameworkStores<Ap
       .AddDefaultTokenProviders();
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddScoped<IAuthService,AuthService>();
+
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
