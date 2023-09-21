@@ -12,18 +12,18 @@ public class AuthService : IAuthService
     private readonly AppDbContext _db;
     private readonly UserManager<AppUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
+    private readonly IJwtTokenGenerate _jwtTokenGenerate;
     public AuthService(AppDbContext db, UserManager<AppUser> userManager,
-        RoleManager<IdentityRole> roleManager)
+        RoleManager<IdentityRole> roleManager, IJwtTokenGenerate jwtTokenGenerate)
     {
         _db = db;
         _userManager = userManager;
         _roleManager = roleManager;
+        _jwtTokenGenerate = jwtTokenGenerate;
     }
 
     public async Task<LoginResponseDto> Login(UserLoginDTO userLoginDTO)
     {
-
-
         var user = _db.AppUsers.FirstOrDefault(u => u.UserName.ToLower() == userLoginDTO.UserName.ToLower());
         bool isValid = await _userManager.CheckPasswordAsync(user, userLoginDTO.Password);
         
@@ -32,8 +32,8 @@ public class AuthService : IAuthService
             return new LoginResponseDto() { User = null, Token = ""};
         }
 
+        var token = _jwtTokenGenerate.GenerateToken(user);
         
-
         UserDTO userDTO = new()
         {
             Email = user.Email,
@@ -45,10 +45,8 @@ public class AuthService : IAuthService
         LoginResponseDto loginRes = new() 
         {
             User = userDTO,
-            Token = ""
+            Token = token
         };
-
-
         return loginRes;
     }
 
@@ -86,7 +84,6 @@ public class AuthService : IAuthService
         }
         catch (Exception ex)
         {
-
             throw;
         }
     }

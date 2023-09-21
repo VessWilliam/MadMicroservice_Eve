@@ -16,7 +16,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddIdentity<AppUser,IdentityRole>().AddEntityFrameworkStores<AppDbContext>()
       .AddDefaultTokenProviders();
-builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("AppSettings"));
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("AppSettings:JwtOptions"));
 builder.Services.AddScoped<IJwtTokenGenerate, JwtTokenGenerate>();
 builder.Services.AddScoped<IAuthService,AuthService>();
 builder.Services.AddControllers();

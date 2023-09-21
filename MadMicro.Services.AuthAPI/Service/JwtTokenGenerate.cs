@@ -1,5 +1,6 @@
 ﻿using MadMicro.Services.AuthAPI.Models;
 using MadMicro.Services.AuthAPI.Service.IService;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -11,9 +12,9 @@ public class JwtTokenGenerate : IJwtTokenGenerate
 {
     private readonly JwtOptions _jwtOptions;
 
-    public JwtTokenGenerate(JwtOptions jwtOptions)
+    public JwtTokenGenerate(IOptions<JwtOptions> jwtOptions)
     {
-        _jwtOptions = jwtOptions;
+        _jwtOptions = jwtOptions.Value;
     }
     public string GenerateToken(AppUser appUser)
     {
