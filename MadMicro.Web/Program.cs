@@ -1,3 +1,4 @@
+using MadMicro.Web.Services;
 using MadMicro.Web.Services.IService;
 using MadMicro.Web.Services.Service;
 using MadMicro.Web.Utility;
@@ -8,14 +9,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpClient();
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddHttpClient<ICouponService, CouponServices>();
 
 StaticDetail.CouponAPIBase = builder.Configuration["ServiceUrls:CouponAPI"];
 StaticDetail.AuthAPIBase = builder.Configuration["ServiceUrls:AuthAPI"];
 
 
 builder.Services.AddScoped<IBaseService, BaseService>();
-builder.Services.AddScoped<ICouponService, CouponServices>();   
+builder.Services.AddScoped<ICouponService, CouponServices>();
+builder.Services.AddScoped<IAuthService,AuthService>();
 
 
 var app = builder.Build();
