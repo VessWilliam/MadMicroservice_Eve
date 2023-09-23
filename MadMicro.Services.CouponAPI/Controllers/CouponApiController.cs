@@ -2,12 +2,14 @@
 using MadMicro.Services.CouponAPI.DataContext;
 using MadMicro.Services.CouponAPI.Models;
 using MadMicro.Services.CouponAPI.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace MadMicro.Services.CouponAPI.Controllers;
 
 [Route("api/coupon")]
+[Authorize]
 [ApiController]
 public class CouponApiController : ControllerBase
 {
