@@ -2,7 +2,7 @@
 using MadMicro.Web.Services.IService;
 using static MadMicro.Web.Utility.StaticDetail;
 
-namespace MadMicro.Web.Services;
+namespace MadMicro.Web.Services.Service;
 
 public class AuthService : IAuthService
 {
@@ -28,7 +28,7 @@ public class AuthService : IAuthService
         return await _baseService.SendAsync(new RequestDTO
         {
             ApiType = ApiType.POST,
-            Data = registerRequestDto,  
+            Data = registerRequestDto,
             Url = $"{AuthAPIBase}/api/auth/AssignRole"
         });
     }

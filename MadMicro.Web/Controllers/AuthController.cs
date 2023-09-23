@@ -25,8 +25,8 @@ public class AuthController : Controller
     [HttpGet]
     public IActionResult Register()
     {
-        var role = new List<SelectListItem>() 
-        { 
+        var role = new List<SelectListItem>()
+        {
           new SelectListItem{Text=StaticDetail.RoleAdmin, Value=StaticDetail.RoleAdmin},
           new SelectListItem{Text=StaticDetail.RoleCustomer, Value=StaticDetail.RoleCustomer},
         };
@@ -34,6 +34,40 @@ public class AuthController : Controller
         ViewBag.RoleList = role;
         return View();
     }
+
+
+    [HttpPost]
+    public async Task<IActionResult> Register(UserRegisterDTO obj)
+    {
+        ResponseDTO result = await _authService.RegisterAsync(obj);
+        ResponseDTO assignRole;
+
+        if (result != null && result.IsSuccess)
+        {
+            if (string.IsNullOrEmpty(obj.Role))
+                obj.Role = StaticDetail.RoleCustomer;
+
+            assignRole = await _authService.AssignRoleLoginAsync(obj);
+
+            if (assignRole != null && assignRole.IsSuccess)
+            {
+                TempData["success"] = "Registration Successful";
+                return RedirectToAction(nameof(Login));
+            }
+        }
+
+        var role = new List<SelectListItem>()
+        {
+          new SelectListItem{Text=StaticDetail.RoleAdmin, Value=StaticDetail.RoleAdmin},
+          new SelectListItem{Text=StaticDetail.RoleCustomer, Value=StaticDetail.RoleCustomer},
+        };
+
+
+        ViewBag.RoleList = role;
+        return View(obj);
+    }
+
+
 
     public IActionResult Logout()
     {
