@@ -4,5 +4,5 @@ namespace MadMicro.Services.AuthAPI.Service.IService;
 
 public interface IJwtTokenGenerate
 {
-    string GenerateToken(AppUser appUser);
+    string GenerateToken(AppUser appUser, IEnumerable<string> roles);
 }

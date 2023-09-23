@@ -47,7 +47,10 @@ public class AuthService : IAuthService
             return new LoginResponseDto() { User = null, Token = ""};
         }
 
-        var token = _jwtTokenGenerate.GenerateToken(user);
+
+
+        var role = await _userManager.GetRolesAsync(user);
+        var token = _jwtTokenGenerate.GenerateToken(user, role);
         
         UserDTO userDTO = new()
         {
