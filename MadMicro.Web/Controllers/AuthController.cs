@@ -43,8 +43,8 @@ public class AuthController : Controller
             _tokenProvider.SetToken(loginResponseDto.Token);
             return RedirectToAction("Index", "Home");
         }
+        TempData["error"] = responseDto?.Message;
 
-        ModelState.AddModelError("CustomError", responseDto.Message);
         return View(obj);
     }
 
@@ -81,6 +81,8 @@ public class AuthController : Controller
                 return RedirectToAction(nameof(Login));
             }
         }
+
+        TempData["error"] = result?.Message;
 
         var role = new List<SelectListItem>()
         {
