@@ -1,5 +1,6 @@
 using AutoMapper;
 using MadMicro.Service.ProductAPI;
+using MadMicro.Service.ProductAPI.Extensions;
 using MadMicro.Services.ProductAPI.DataContext;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,8 +10,12 @@ builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
+builder.AddAppAuthetication();
+builder.Services.AddAuthorization();
+
+
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -28,6 +33,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
