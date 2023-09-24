@@ -30,7 +30,7 @@ public class AuthService : IAuthService
             ApiType = ApiType.POST,
             Data = registerRequestDto,
             Url = $"{AuthAPIBase}/api/auth/AssignRole"
-        });
+        },withBearer:false);
     }
 
     public async Task<ResponseDTO?> RegisterAsync(UserRegisterDTO registerRequestDto)
@@ -40,6 +40,6 @@ public class AuthService : IAuthService
             ApiType = ApiType.POST,
             Data = registerRequestDto,
             Url = $"{AuthAPIBase}/api/auth/register"
-        });
+        },withBearer:false);
     }
 }
