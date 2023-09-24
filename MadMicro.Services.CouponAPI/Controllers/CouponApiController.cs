@@ -91,6 +91,7 @@ public class CouponApiController : ControllerBase
     
     
     [HttpPost]
+    [Authorize(Roles = "ADMIN")]
     public async Task<ResponseDTO> CreateNewCoupon([FromBody] CouponDTO couponDTO)
     {
         try
@@ -110,6 +111,7 @@ public class CouponApiController : ControllerBase
     }
     
     [HttpPut]
+    [Authorize(Roles = "ADMIN")]
     public async Task<ResponseDTO> UpdateCoupon([FromBody] CouponDTO couponDTO)
     {
         try
@@ -130,6 +132,7 @@ public class CouponApiController : ControllerBase
     
     [HttpDelete]
     [Route("{id:int}")]
+    [Authorize(Roles = "ADMIN")]
     public async Task<ResponseDTO> DeleteCoupon(int id)
     {
         try
