@@ -13,13 +13,16 @@ builder.Services.AddHttpContextAccessor();
 
 StaticDetail.CouponAPIBase = builder.Configuration["ServiceUrls:CouponAPI"];
 StaticDetail.AuthAPIBase = builder.Configuration["ServiceUrls:AuthAPI"];
+StaticDetail.ProductAPIBase = builder.Configuration["ServiceUrls:ProductAPI"];
 
 builder.Services.AddHttpClient<ICouponService, CouponServices>();
 builder.Services.AddHttpClient<IAuthService, AuthService>();
+builder.Services.AddHttpClient<IProductService, ProductService>();
 
 builder.Services.AddScoped<IBaseService, BaseService>();
 builder.Services.AddScoped<ICouponService, CouponServices>();
 builder.Services.AddScoped<IAuthService,AuthService>();
+builder.Services.AddScoped<IProductService,ProductService>();   
 builder.Services.AddScoped<ITokenProvider, TokenProvider>();    
 
 
@@ -36,7 +39,6 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 

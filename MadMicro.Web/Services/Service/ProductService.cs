@@ -4,11 +4,11 @@ using static MadMicro.Web.Utility.StaticDetail;
 
 namespace MadMicro.Web.Services.Service;
 
-public class ProoductService : IProductService
+public class ProductService : IProductService
 {
     private readonly IBaseService _baseService;
 
-    public ProoductService(IBaseService baseService)
+    public ProductService(IBaseService baseService)
     {
         _baseService = baseService;
     }

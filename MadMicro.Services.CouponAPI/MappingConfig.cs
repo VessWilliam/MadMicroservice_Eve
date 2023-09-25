@@ -10,8 +10,7 @@ public class MappingConfig
     {
         var mappingConfig = new MapperConfiguration(config =>
         {
-            config.CreateMap<CouponDTO, Coupon>();
-            config.CreateMap<Coupon, CouponDTO>();
+            config.CreateMap<CouponDTO, Coupon>().ReverseMap();
         });
         return mappingConfig;   
     }
