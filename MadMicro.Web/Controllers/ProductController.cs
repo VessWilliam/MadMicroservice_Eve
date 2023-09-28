@@ -28,6 +28,11 @@ public class ProductController : Controller
 		return View(listOfProduct);
 	}
 
+	public async Task<IActionResult> ProductCreate()
+	{
+		return View();
+	}
+
 	[HttpPost]
 	public async Task<IActionResult> ProductCreate(ProductDTO productDTO)
 	{
@@ -68,6 +73,34 @@ public class ProductController : Controller
 		if (response != null && response.IsSuccess)
 		{
 			TempData["success"] = "Product Deleted Successful";
+			return RedirectToAction(nameof(ProductIndex));
+		}
+		TempData["error"] = response?.Message;
+		return View(productDTO);
+	}
+	
+	public async Task<IActionResult> ProductEdit(int productId)
+	{
+		ResponseDTO? response = await _productService.GetAllProductsByIdAsync(productId);
+		if (response != null && response.IsSuccess)
+		{
+			var model = JsonConvert.DeserializeObject<ProductDTO>(response.Result.ToString());
+			return View(model);
+		}
+		TempData["error"] = response?.Message;
+		return NotFound();
+	}
+
+
+
+	[HttpPost]
+	public async Task<IActionResult> ProductEdit(ProductDTO productDTO)
+	{
+		ResponseDTO? response = await _productService.UpdateProductAsync(productDTO);
+
+		if (response != null && response.IsSuccess)
+		{
+			TempData["success"] = "Product Updated Successful";
 			return RedirectToAction(nameof(ProductIndex));
 		}
 		TempData["error"] = response?.Message;
