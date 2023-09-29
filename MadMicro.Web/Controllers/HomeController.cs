@@ -1,5 +1,6 @@
 using MadMicro.Web.Models;
 using MadMicro.Web.Services.IService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Diagnostics;
@@ -31,6 +32,24 @@ namespace MadMicro.Web.Controllers
 
             return View(list);
         }
+
+        [Authorize]
+        public async Task<IActionResult> ProductDetails(int productId)
+        {
+            ProductDTO? product = new();
+
+            ResponseDTO? response = await _productService.GetAllProductsByIdAsync(productId);
+
+            if (response != null && response.IsSuccess)
+                product = JsonConvert.DeserializeObject<ProductDTO?>(response.Result.ToString());
+
+
+            if (!string.IsNullOrEmpty(response?.Message))
+                TempData["error"] = response?.Message;
+
+            return View(product);
+        }
+
 
         public IActionResult Privacy()
         {
