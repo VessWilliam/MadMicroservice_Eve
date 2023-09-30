@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MadMicro.Web", "MadMicro.We
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MadMicro.Services.AuthAPI", "MadMicro.Services.AuthAPI\MadMicro.Services.AuthAPI.csproj", "{F618B2C0-7FB1-4D12-AAAD-15A36586C797}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MadMicro.Service.ProductAPI", "MadMicro.Service.ProductAPI\MadMicro.Service.ProductAPI.csproj", "{557CC541-FAF0-4884-BFEE-676CF93AA732}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MadMicro.Services.ProductAPI", "MadMicro.Service.ProductAPI\MadMicro.Services.ProductAPI.csproj", "{557CC541-FAF0-4884-BFEE-676CF93AA732}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MadMicro.Services.ShoppingCartAPI", "MadMicro.Services.ShoppingCartAPI\MadMicro.Services.ShoppingCartAPI.csproj", "{C34AB9C9-82B4-42A6-8BDC-7AC556FC13CC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,10 @@ Global
 		{557CC541-FAF0-4884-BFEE-676CF93AA732}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{557CC541-FAF0-4884-BFEE-676CF93AA732}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{557CC541-FAF0-4884-BFEE-676CF93AA732}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C34AB9C9-82B4-42A6-8BDC-7AC556FC13CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C34AB9C9-82B4-42A6-8BDC-7AC556FC13CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C34AB9C9-82B4-42A6-8BDC-7AC556FC13CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C34AB9C9-82B4-42A6-8BDC-7AC556FC13CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -50,6 +56,7 @@ Global
 		{085872D7-9FA7-44E6-BB78-8D1D94901225} = {CD552E59-F388-40B3-A414-99393D87915F}
 		{F618B2C0-7FB1-4D12-AAAD-15A36586C797} = {CD526126-CE2C-4939-85EE-449EC6B537E2}
 		{557CC541-FAF0-4884-BFEE-676CF93AA732} = {CD526126-CE2C-4939-85EE-449EC6B537E2}
+		{C34AB9C9-82B4-42A6-8BDC-7AC556FC13CC} = {CD526126-CE2C-4939-85EE-449EC6B537E2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FACC5904-8084-4C9D-8834-8E47AC3988B6}

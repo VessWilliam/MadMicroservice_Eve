@@ -1,0 +1,6 @@
+@MadMicro.Services.ShoppingCartAPI_HostAddress = http://localhost:5036
+
+GET {{MadMicro.Services.ShoppingCartAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
