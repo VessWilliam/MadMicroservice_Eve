@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace MadMicro.Services.CouponAPI.Controllers;
 
 [Route("api/coupon")]
-[Authorize]
+//[Authorize]
 [ApiController]
 public class CouponApiController : ControllerBase
 {
