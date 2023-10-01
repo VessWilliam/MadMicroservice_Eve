@@ -35,6 +35,7 @@ namespace MadMicro.Web.Services.Service
                 }
 
                 message.RequestUri = new Uri(requestDTO.Url);
+
                 if (requestDTO.Data != null)
                 {
                     message.Content = new StringContent(JsonConvert.SerializeObject(requestDTO.Data), Encoding.UTF8, "application/json");
