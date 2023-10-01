@@ -2,12 +2,18 @@ using AutoMapper;
 using MadMicro.Service.ShoppingCartAPI;
 using MadMicro.Service.ShoppingCartAPI.Extensions;
 using MadMicro.Services.ShoppingCartAPI.DataContext;
+using MadMicro.Services.ShoppingCartAPI.Services.IService;
+using MadMicro.Services.ShoppingCartAPI.Services.Service;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddHttpClient("Product", u => 
+u.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductAPI"]));
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

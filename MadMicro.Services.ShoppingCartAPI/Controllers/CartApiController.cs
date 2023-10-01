@@ -2,6 +2,7 @@
 using MadMicro.Services.ShoppingCartAPI.DataContext;
 using MadMicro.Services.ShoppingCartAPI.Models;
 using MadMicro.Services.ShoppingCartAPI.Models.DTO;
+using MadMicro.Services.ShoppingCartAPI.Services.IService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,14 +16,48 @@ public class CartApiController : ControllerBase
 {
     private ResponseDTO _response;
     private IMapper _mapper;
+    private readonly IProductService _productService;
     private readonly AppDbContext _context;
 
-    public CartApiController(AppDbContext context, IMapper mapper)
+    public CartApiController(AppDbContext context, IMapper mapper, IProductService productService)
     {
         _context = context;
         _mapper = mapper;
+        _productService = productService;
         _response = new();
+
     }
+
+    [HttpGet("GetCart/{userId}")]
+    public async Task<ResponseDTO> GetCart(string userId)
+    {
+        try
+        {
+            CartDTO cart = new()
+            {
+                CartHeaders = _mapper.Map<CartHeadersDTO>(_context.CartHeaders.First(u => u.UserId == userId))
+            };
+            cart.CartDetails = _mapper.Map<IEnumerable<CartDetailsDTO>>(
+                _context.CartDetails.Where(u => u.CartHeader.CartHeaderId == cart.CartHeaders.CartHeaderId));
+
+            IEnumerable<ProductDTO> productDTO = await _productService.GetProducts();
+
+            foreach (var item in cart.CartDetails)
+            {
+                item.Product = productDTO.FirstOrDefault(u => u.ProductId == item.ProductId);
+                cart.CartHeaders.CartTotal += item.Count * item.Product.Price;
+            }
+            _response.Result = cart;
+        }
+        catch (Exception ex)
+        {
+
+            _response.IsSuccess = false;
+            _response.Message = ex.Message;
+        }
+        return _response;
+    }
+
     [HttpPost("CartUpsert")]
     public async Task<ResponseDTO> CartUpsert(CartDTO cartDTO)
     {
