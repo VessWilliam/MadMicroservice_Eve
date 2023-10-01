@@ -24,9 +24,6 @@
                         <li class="nav-item">
                             <a class="nav-link " asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link " asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Content Management
@@ -36,6 +33,12 @@
                                 <li><a class="dropdown-item" asp-controller="Product" asp-action="ProductIndex">Product</a></li>
                                 <li><hr class="dropdown-divider"></li>
                             </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " asp-area="" asp-controller="ShopCart" asp-action="CartIndex">
+                                &nbsp; <i class="bi bi-cart"></i>
+                            </a>
+                        </li>
                     </ul>
                     <ul class="navbar-nav">
                         @if(!User.Identity.IsAuthenticated)

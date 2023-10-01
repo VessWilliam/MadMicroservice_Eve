@@ -1,3 +1,4 @@
+using IdentityModel;
 using MadMicro.Web.Models;
 using MadMicro.Web.Services.IService;
 using Microsoft.AspNetCore.Authorization;
@@ -11,10 +12,12 @@ namespace MadMicro.Web.Controllers
     {
         
         private readonly IProductService _productService;
+        private readonly IShopCartService _shopCartService;
 
-        public HomeController(IProductService productService)
+        public HomeController(IProductService productService, IShopCartService shopCartService)
         {
-          _productService = productService;
+            _productService = productService;
+            _shopCartService = shopCartService;
         }
 
         public async Task<IActionResult> Index()
@@ -48,12 +51,49 @@ namespace MadMicro.Web.Controllers
                 TempData["error"] = response?.Message;
 
             return View(product);
-        }
-
-
-        public IActionResult Privacy()
+        }  
+        
+        
+        [Authorize]
+        [HttpPost]
+        [ActionName("ProductDetails")]
+        public async Task<IActionResult> ProductDetails(ProductDTO productDTO)
         {
-            return View();
+
+            CartDTO cart = new()
+            {
+                CartHeaders = new()
+                {
+                    UserId = User.Claims.Where(u => u.Type == JwtClaimTypes.Subject)?.FirstOrDefault()?.Value
+                }
+            };
+
+            CartDetailsDTO cartDetails = new()
+            {
+                Count = productDTO.Count,
+                ProductId = productDTO.ProductId,   
+
+            };
+
+            List<CartDetailsDTO> cartDetailsList = new()
+            {
+                cartDetails
+            };
+            cart.CartDetails = cartDetailsList;
+
+
+            ResponseDTO? response = await _shopCartService.UpsertCartAsync(cart);
+
+            if (response != null && response.IsSuccess)
+            {
+                TempData["success"] = "Item Has Added To Cart";
+                return RedirectToAction(nameof(Index));
+            }
+
+            if (!string.IsNullOrEmpty(response?.Message))
+                   TempData["error"] = response?.Message;
+
+            return View(productDTO);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
