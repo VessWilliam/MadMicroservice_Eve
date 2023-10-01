@@ -17,16 +17,67 @@ public class CartApiController : ControllerBase
     private ResponseDTO _response;
     private IMapper _mapper;
     private readonly IProductService _productService;
+    private readonly ICouponService _couponService;
     private readonly AppDbContext _context;
 
-    public CartApiController(AppDbContext context, IMapper mapper, IProductService productService)
+    public CartApiController(AppDbContext context, IMapper mapper, 
+        IProductService productService, ICouponService couponService)
     {
         _context = context;
         _mapper = mapper;
         _productService = productService;
+        _couponService = couponService;
         _response = new();
 
     }
+
+    [HttpPost("ApplyCoupon")]
+    public async Task<object> ApplyCoupon([FromBody] CartDTO cartDTO)
+    {
+        try
+        {
+
+            var cart = await _context.CartHeaders.FirstAsync(u => 
+                   u.UserId ==  cartDTO.CartHeaders.UserId);
+            cart.CouponCode = cartDTO.CartHeaders.CouponCode;
+            _context.CartHeaders.Update(cart);
+            await _context.SaveChangesAsync();
+            _response.Result = true;
+        }
+        catch (Exception ex)
+        {
+            _response.IsSuccess = false;
+            _response.Message = ex.Message; 
+            throw;
+        }
+
+        return _response;
+    }
+
+
+    [HttpPost("RemoveCoupon")]
+    public async Task<object> RemoveCoupon([FromBody] CartDTO cartDTO)
+    {
+        try
+        {
+
+            var cart = await _context.CartHeaders.FirstAsync(u =>
+                   u.UserId == cartDTO.CartHeaders.UserId);
+            cart.CouponCode = "";
+            _context.CartHeaders.Update(cart);
+            await _context.SaveChangesAsync();
+            _response.Result = true;
+        }
+        catch (Exception ex)
+        {
+            _response.IsSuccess = false;
+            _response.Message = ex.Message;
+            throw;
+        }
+
+        return _response;
+    }
+
 
     [HttpGet("GetCart/{userId}")]
     public async Task<ResponseDTO> GetCart(string userId)
@@ -47,6 +98,18 @@ public class CartApiController : ControllerBase
                 item.Product = productDTO.FirstOrDefault(u => u.ProductId == item.ProductId);
                 cart.CartHeaders.CartTotal += item.Count * item.Product.Price;
             }
+
+            //apply coupon if any 
+            if (!string.IsNullOrEmpty(cart.CartHeaders.CouponCode))
+            {
+                CouponDTO coupon = await _couponService.GetCoupon(cart.CartHeaders.CouponCode);
+                if (coupon != null && cart.CartHeaders.CartTotal > coupon.MinAmount)
+                {
+                    cart.CartHeaders.CartTotal -= coupon.DiscountAmount;
+                    cart.CartHeaders.Discount = coupon.DiscountAmount;
+                }
+            }
+
             _response.Result = cart;
         }
         catch (Exception ex)
