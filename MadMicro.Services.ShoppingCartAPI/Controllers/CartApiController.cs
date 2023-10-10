@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MadMicro.MessageBus;
 using MadMicro.Services.ShoppingCartAPI.DataContext;
 using MadMicro.Services.ShoppingCartAPI.Models;
 using MadMicro.Services.ShoppingCartAPI.Models.DTO;
@@ -18,15 +19,19 @@ public class CartApiController : ControllerBase
     private IMapper _mapper;
     private readonly IProductService _productService;
     private readonly ICouponService _couponService;
+    private readonly IMessageBus _messageBus;
+    private readonly IConfiguration _configuration;
     private readonly AppDbContext _context;
 
     public CartApiController(AppDbContext context, IMapper mapper, 
-        IProductService productService, ICouponService couponService)
+        IProductService productService, ICouponService couponService, IMessageBus messageBus, IConfiguration configuration)
     {
         _context = context;
         _mapper = mapper;
         _productService = productService;
         _couponService = couponService;
+        _messageBus = messageBus;
+        _configuration = configuration;
         _response = new();
 
     }
@@ -42,6 +47,25 @@ public class CartApiController : ControllerBase
             cart.CouponCode = cartDTO.CartHeaders.CouponCode;
             _context.CartHeaders.Update(cart);
             await _context.SaveChangesAsync();
+            _response.Result = true;
+        }
+        catch (Exception ex)
+        {
+            _response.IsSuccess = false;
+            _response.Message = ex.Message; 
+            throw;
+        }
+
+        return _response;
+    }
+
+    [HttpPost("EmailCartRequest")]
+    public async Task<object> EmailCartRequest([FromBody] CartDTO cartDTO)
+    {
+        try
+        {
+            await _messageBus.PublishMessage(cartDTO, 
+                _configuration.GetValue<string>("TopicAndQueueNames:EmailShoppingCart") ?? string.Empty);
             _response.Result = true;
         }
         catch (Exception ex)

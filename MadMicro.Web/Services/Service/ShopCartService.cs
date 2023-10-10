@@ -25,6 +25,16 @@ public class ShopCartService : IShopCartService
         });
     }
 
+    public async Task<ResponseDTO?> EmailCart(CartDTO cartDTO)
+    {
+        return await _baseService.SendAsync(new RequestDTO()
+        { 
+            ApiType = ApiType.POST,
+            Data = cartDTO,
+            Url = $"{ShopCartAPIBase}/api/cart/EmailCartRequest"
+        });
+    }
+
     public async Task<ResponseDTO?> GetCartByUserIdAsync(string userId)
     {
         return await _baseService.SendAsync(new RequestDTO()

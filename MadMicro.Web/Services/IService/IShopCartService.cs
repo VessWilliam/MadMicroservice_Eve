@@ -8,4 +8,5 @@ public interface IShopCartService
     Task<ResponseDTO?> GetCartByUserIdAsync(string userId);
     Task<ResponseDTO?> UpsertCartAsync(CartDTO cartDTO);
     Task<ResponseDTO?> ApplyCouponAsync(CartDTO cartDTO);
+    Task<ResponseDTO?> EmailCart(CartDTO cartDTO);
 }

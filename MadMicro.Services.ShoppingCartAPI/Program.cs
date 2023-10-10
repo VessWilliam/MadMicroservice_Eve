@@ -1,4 +1,6 @@
 using AutoMapper;
+using MadMicro.MessageBus;
+using MadMicro.MessageBus.Services.Service;
 using MadMicro.Service.ShoppingCartAPI;
 using MadMicro.Service.ShoppingCartAPI.Extensions;
 using MadMicro.Services.ShoppingCartAPI.DataContext;
@@ -12,10 +14,11 @@ IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+builder.Services.AddScoped<BackendApiAuthHttpClientHandler>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICouponService, CouponService>();
+builder.Services.AddScoped<IMessageBus, MessageBus>();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<BackendApiAuthHttpClientHandler>();
 
 builder.Services.AddHttpClient("Coupon", u =>
 u.BaseAddress = new Uri(builder.Configuration["ServiceUrls:CouponAPI"]))
