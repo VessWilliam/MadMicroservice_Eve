@@ -28,7 +28,7 @@ public class ShopCartController : Controller
         var userId = User.Claims.Where(u => u.Type == JwtClaimTypes.Subject)?.FirstOrDefault()?.Value;
         ResponseDTO? res = await _cartService.RemoveFromCartAsync(cartDetailsId);
 
-        if (res == null & !res.IsSuccess) return View();
+        if (res == null || !res.IsSuccess) return View();
 
         TempData["success"] = "Cart Updated Succeed";
         return RedirectToAction(nameof(CartIndex));
@@ -39,7 +39,7 @@ public class ShopCartController : Controller
     {
         ResponseDTO? res = await _cartService.ApplyCouponAsync(cartDTO);
 
-        if (res == null & !res.IsSuccess) return View();
+        if (res == null || !res.IsSuccess) return View();
 
         TempData["success"] = "Cart Updated Succeed";
         return RedirectToAction(nameof(CartIndex));
@@ -51,7 +51,7 @@ public class ShopCartController : Controller
         cartDTO.CartHeaders.CouponCode = "";
         ResponseDTO? res = await _cartService.ApplyCouponAsync(cartDTO);
 
-        if (res == null & !res.IsSuccess) return View();
+        if (res == null || !res.IsSuccess) return View();
 
         TempData["success"] = "Cart Updated Succeed";
         return RedirectToAction(nameof(CartIndex));
@@ -64,7 +64,7 @@ public class ShopCartController : Controller
             u => u.Type == JwtRegisteredClaimNames.Sub).FirstOrDefault()?.Value;
 
         ResponseDTO? res = await _cartService.GetCartByUserIdAsync(userId);
-        if (!(res != null & res.IsSuccess)) return new CartDTO();
+        if (res != null && !res.IsSuccess) return new CartDTO();
 
         var cart = JsonConvert.DeserializeObject<CartDTO>(res.Result.ToString());
         return cart;

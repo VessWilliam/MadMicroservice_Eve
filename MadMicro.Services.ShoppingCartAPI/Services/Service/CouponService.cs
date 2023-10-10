@@ -19,10 +19,10 @@ public class CouponService : ICouponService
         var response = await client.GetAsync($"/api/coupon/GetByCode/{couponCode}");
         var apiContent = await response.Content.ReadAsStringAsync();
         var responseContent = JsonConvert.DeserializeObject<ResponseDTO>(apiContent);
-        if (responseContent.IsSuccess)
-            return JsonConvert.DeserializeObject<CouponDTO>(
-                responseContent.Result.ToString());
-
-        return new CouponDTO();
+        if (responseContent == null || !responseContent.IsSuccess)
+             return new CouponDTO();
+        
+      
+       return JsonConvert.DeserializeObject<CouponDTO>(responseContent.Result.ToString());
     }
 }

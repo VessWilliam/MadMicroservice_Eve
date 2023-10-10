@@ -4,6 +4,7 @@ using MadMicro.Service.ShoppingCartAPI.Extensions;
 using MadMicro.Services.ShoppingCartAPI.DataContext;
 using MadMicro.Services.ShoppingCartAPI.Services.IService;
 using MadMicro.Services.ShoppingCartAPI.Services.Service;
+using MadMicro.Services.ShoppingCartAPI.Utility;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,11 +14,15 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICouponService, CouponService>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<BackendApiAuthHttpClientHandler>();
 
 builder.Services.AddHttpClient("Coupon", u =>
-u.BaseAddress = new Uri(builder.Configuration["ServiceUrls:CouponAPI"]));
+u.BaseAddress = new Uri(builder.Configuration["ServiceUrls:CouponAPI"]))
+    .AddHttpMessageHandler<BackendApiAuthHttpClientHandler>();
 builder.Services.AddHttpClient("Product", u => 
-u.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductAPI"]));
+u.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductAPI"]))
+    .AddHttpMessageHandler<BackendApiAuthHttpClientHandler>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
