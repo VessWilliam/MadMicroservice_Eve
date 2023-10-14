@@ -11,7 +11,6 @@ namespace MadMicro.Web.Controllers;
 public class ShopCartController : Controller
 {
     private readonly IShopCartService _cartService;
-
     public ShopCartController(IShopCartService cartService)
     {
         _cartService = cartService;
@@ -25,10 +24,10 @@ public class ShopCartController : Controller
 
     public async Task<IActionResult> Remove(int cartDetailsId)
     {
-        var userId = User.Claims.Where(u => u.Type == JwtClaimTypes.Subject)?.FirstOrDefault()?.Value;
+        var userId = User.Claims.Where(u => u.Type is JwtClaimTypes.Subject)?.FirstOrDefault()?.Value;
         ResponseDTO? res = await _cartService.RemoveFromCartAsync(cartDetailsId);
 
-        if (res == null || !res.IsSuccess) return View();
+        if (res is null || !res.IsSuccess) return View();
 
         TempData["success"] = "Cart Updated Succeed";
         return RedirectToAction(nameof(CartIndex));
@@ -39,7 +38,7 @@ public class ShopCartController : Controller
     {
         ResponseDTO? res = await _cartService.ApplyCouponAsync(cartDTO);
 
-        if (res == null || !res.IsSuccess) return View();
+        if (res is null || !res.IsSuccess) return View();
 
         TempData["success"] = "Cart Updated Succeed";
         return RedirectToAction(nameof(CartIndex));
@@ -51,17 +50,27 @@ public class ShopCartController : Controller
         cartDTO.CartHeaders.CouponCode = "";
         ResponseDTO? res = await _cartService.ApplyCouponAsync(cartDTO);
 
-        if (res == null || !res.IsSuccess) return View();
+        if (res is null || !res.IsSuccess) return View();
 
         TempData["success"] = "Cart Updated Succeed";
         return RedirectToAction(nameof(CartIndex));
     }
 
 
+    [HttpPost]
+    public async Task<IActionResult> EmailCart(CartDTO cartDTO)
+    {
+        ResponseDTO res = await _cartService.EmailCart(cartDTO);
+        if(res is null || !res.IsSuccess)  return View();
+
+        TempData["success"] = "Email Will Be Sent Shortly";
+        return RedirectToAction(nameof(CartIndex));
+    }
+
     private async Task<CartDTO?> LoadCartBaseOnLoginId()
     {
         var userId = User.Claims.Where(
-            u => u.Type == JwtRegisteredClaimNames.Sub).FirstOrDefault()?.Value;
+            u => u.Type is JwtRegisteredClaimNames.Sub).FirstOrDefault()?.Value;
 
         ResponseDTO? res = await _cartService.GetCartByUserIdAsync(userId);
         if (res != null && !res.IsSuccess) return new CartDTO();
@@ -69,5 +78,9 @@ public class ShopCartController : Controller
         var cart = JsonConvert.DeserializeObject<CartDTO>(res.Result.ToString());
         return cart;
     }
+
+
+
+
 
 }
