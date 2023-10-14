@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using MadMicro.Service.ProductAPI.Models;
-using MadMicro.Service.ProductAPI.Models.DTO;
+using MadMicro.Services.ProductAPI.Models;
+using MadMicro.Services.ProductAPI.Models.DTO;
 
-namespace MadMicro.Service.ProductAPI;
+namespace MadMicro.Services.ProductAPI;
 
 public class MappingConfig
 {

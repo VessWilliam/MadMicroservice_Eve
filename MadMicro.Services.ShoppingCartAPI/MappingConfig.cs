@@ -2,7 +2,7 @@
 using MadMicro.Services.ShoppingCartAPI.Models;
 using MadMicro.Services.ShoppingCartAPI.Models.DTO;
 
-namespace MadMicro.Service.ShoppingCartAPI;
+namespace MadMicro.Services.ShoppingCartAPI;
 
 public class MappingConfig
 {

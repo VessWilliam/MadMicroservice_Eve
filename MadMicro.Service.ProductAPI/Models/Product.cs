@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MadMicro.Service.ProductAPI.Models;
+namespace MadMicro.Services.ProductAPI.Models;
 
 public class Product
 {

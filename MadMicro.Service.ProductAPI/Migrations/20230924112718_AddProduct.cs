@@ -4,7 +4,7 @@
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace MadMicro.Service.ProductAPI.Migrations
+namespace MadMicro.Services.ProductAPI.Migrations
 {
     /// <inheritdoc />
     public partial class AddProduct : Migration

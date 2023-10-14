@@ -3,7 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 
-namespace MadMicro.Service.ShoppingCartAPI.Extensions;
+namespace MadMicro.Services.ShoppingCartAPI.Extensions;
 
 public static class WebBuilderExtension
 {

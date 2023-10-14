@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace MadMicro.Service.ProductAPI.Migrations
+namespace MadMicro.Services.ProductAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20230924112718_AddProduct")]

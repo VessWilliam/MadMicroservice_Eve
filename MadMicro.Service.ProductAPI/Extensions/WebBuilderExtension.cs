@@ -3,7 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 
-namespace MadMicro.Service.ProductAPI.Extensions
+namespace MadMicro.Services.ProductAPI.Extensions
 {
     public static class WebBuilderExtension
     {

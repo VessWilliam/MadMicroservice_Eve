@@ -1,4 +1,4 @@
-﻿using MadMicro.Service.ProductAPI.Models;
+﻿using MadMicro.Services.ProductAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace MadMicro.Services.ProductAPI.DataContext;

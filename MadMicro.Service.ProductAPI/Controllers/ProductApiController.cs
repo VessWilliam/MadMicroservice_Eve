@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
-using MadMicro.Service.ProductAPI.Models;
-using MadMicro.Service.ProductAPI.Models.DTO;
-using MadMicro.Services.ProductAPI.DataContext;
+using MadMicro.Services.ProductAPI.Models;
 using MadMicro.Services.ProductAPI.Models.DTO;
+using MadMicro.Services.ProductAPI.DataContext;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace MadMicro.Service.ProductAPI.Controllers;
+namespace MadMicro.Services.ProductAPI.Controllers;
 
 [Route("api/product")]
 [ApiController]

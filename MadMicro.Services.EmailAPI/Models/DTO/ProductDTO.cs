@@ -1,4 +1,6 @@
-﻿namespace MadMicro.Services.ProductAPI.Models.DTO;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MadMicro.Services.EmailAPI.Models.DTO;
 
 public class ProductDTO
 {
@@ -8,5 +10,7 @@ public class ProductDTO
     public string Description { get; set; }
     public string CategoryName { get; set; }
     public string ImageURL { get; set; }
+    [Range(1,100)]
+    public int Count { get; set; } = 1;
 
 }

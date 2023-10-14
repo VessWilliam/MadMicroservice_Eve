@@ -1,21 +1,13 @@
-using AutoMapper;
-using MadMicro.Services.ProductAPI;
-using MadMicro.Services.ProductAPI.Extensions;
-using MadMicro.Services.ProductAPI.DataContext;
+using MadMicro.Services.EmailAPI.DataContext;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
-builder.Services.AddSingleton(mapper);
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+// Add services to the container.
 
 builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-
-builder.AddAppAuthetication();
-builder.Services.AddAuthorization();
-
-
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -33,14 +25,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
 ApplyMigration();
-
-
 app.Run();
 
 void ApplyMigration()

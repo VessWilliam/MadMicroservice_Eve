@@ -1,8 +1,8 @@
 using AutoMapper;
 using MadMicro.MessageBus;
 using MadMicro.MessageBus.Services.Service;
-using MadMicro.Service.ShoppingCartAPI;
-using MadMicro.Service.ShoppingCartAPI.Extensions;
+using MadMicro.Services.ShoppingCartAPI;
+using MadMicro.Services.ShoppingCartAPI.Extensions;
 using MadMicro.Services.ShoppingCartAPI.DataContext;
 using MadMicro.Services.ShoppingCartAPI.Services.IService;
 using MadMicro.Services.ShoppingCartAPI.Services.Service;
