@@ -60,7 +60,11 @@ public class ShopCartController : Controller
     [HttpPost]
     public async Task<IActionResult> EmailCart(CartDTO cartDTO)
     {
-        ResponseDTO res = await _cartService.EmailCart(cartDTO);
+
+        var cart = await LoadCartBaseOnLoginId();
+        cart.CartHeaders.Email = User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Email).FirstOrDefault()?.Value;
+
+        ResponseDTO res = await _cartService.EmailCart(cart);
         if(res is null || !res.IsSuccess)  return View();
 
         TempData["success"] = "Email Will Be Sent Shortly";
@@ -73,7 +77,7 @@ public class ShopCartController : Controller
             u => u.Type is JwtRegisteredClaimNames.Sub).FirstOrDefault()?.Value;
 
         ResponseDTO? res = await _cartService.GetCartByUserIdAsync(userId);
-        if (res != null && !res.IsSuccess) return new CartDTO();
+        if (res is not null && !res.IsSuccess) return new CartDTO();
 
         var cart = JsonConvert.DeserializeObject<CartDTO>(res.Result.ToString());
         return cart;
