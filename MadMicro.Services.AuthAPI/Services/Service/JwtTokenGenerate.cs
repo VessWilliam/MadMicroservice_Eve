@@ -6,7 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace MadMicro.Services.AuthAPI.Service;
+namespace MadMicro.Services.AuthAPI.Services.Service;
 
 public class JwtTokenGenerate : IJwtTokenGenerate
 {
@@ -21,10 +21,10 @@ public class JwtTokenGenerate : IJwtTokenGenerate
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_jwtOptions.Secret);
         var claims = new List<Claim>
-        { 
-            new Claim(JwtRegisteredClaimNames.Email, appUser.Email), 
-            new Claim(JwtRegisteredClaimNames.Sub, appUser.Id), 
-            new Claim(JwtRegisteredClaimNames.Name, appUser.UserName.ToString()), 
+        {
+            new Claim(JwtRegisteredClaimNames.Email, appUser.Email),
+            new Claim(JwtRegisteredClaimNames.Sub, appUser.Id),
+            new Claim(JwtRegisteredClaimNames.Name, appUser.UserName.ToString()),
         };
 
         claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));

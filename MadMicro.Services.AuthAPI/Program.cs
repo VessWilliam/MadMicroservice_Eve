@@ -1,7 +1,7 @@
 using MadMicro.Services.AuthAPI.DataContext;
 using MadMicro.Services.AuthAPI.Models;
-using MadMicro.Services.AuthAPI.Service;
 using MadMicro.Services.AuthAPI.Service.IService;
+using MadMicro.Services.AuthAPI.Services.Service;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

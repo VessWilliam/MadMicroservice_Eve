@@ -1,4 +1,4 @@
-﻿namespace MadMicro.Services.EmailAPI.Services;
+﻿namespace MadMicro.Services.EmailAPI.Services.IService;
 
 public interface IAzureServiceBusConsumer
 {

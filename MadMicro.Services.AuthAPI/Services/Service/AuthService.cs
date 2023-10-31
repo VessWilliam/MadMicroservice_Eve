@@ -5,7 +5,7 @@ using MadMicro.Services.AuthAPI.Models.DTO;
 using MadMicro.Services.AuthAPI.Service.IService;
 using Microsoft.AspNetCore.Identity;
 
-namespace MadMicro.Services.AuthAPI.Service;
+namespace MadMicro.Services.AuthAPI.Services.Service;
 
 public class AuthService : IAuthService
 {
@@ -25,9 +25,9 @@ public class AuthService : IAuthService
     public async Task<bool> AssignRole(string email, string roleName)
     {
         var user = _db.AppUsers.FirstOrDefault(u => u.Email.ToLower() == email.ToLower());
-        if(user != null)
+        if (user != null)
         {
-            if(!_roleManager.RoleExistsAsync(roleName).GetAwaiter().GetResult())
+            if (!_roleManager.RoleExistsAsync(roleName).GetAwaiter().GetResult())
             {
                 _roleManager.CreateAsync(new IdentityRole(roleName)).GetAwaiter().GetResult();
             }
@@ -41,17 +41,17 @@ public class AuthService : IAuthService
     {
         var user = _db.AppUsers.FirstOrDefault(u => u.UserName.ToLower() == userLoginDTO.UserName.ToLower());
         bool isValid = await _userManager.CheckPasswordAsync(user, userLoginDTO.Password);
-        
-        if (user == null ||  isValid == false) 
+
+        if (user == null || isValid == false)
         {
-            return new LoginResponseDto() { User = null, Token = ""};
+            return new LoginResponseDto() { User = null, Token = "" };
         }
 
 
 
         var role = await _userManager.GetRolesAsync(user);
         var token = _jwtTokenGenerate.GenerateToken(user, role);
-        
+
         UserDTO userDTO = new()
         {
             Email = user.Email,
@@ -60,7 +60,7 @@ public class AuthService : IAuthService
             PhoneNumber = user.PhoneNumber
         };
 
-        LoginResponseDto loginRes = new() 
+        LoginResponseDto loginRes = new()
         {
             User = userDTO,
             Token = token
@@ -81,10 +81,10 @@ public class AuthService : IAuthService
 
         try
         {
-            var result = await _userManager.CreateAsync(users,userRegisterDTO.Password);
-            if(result.Succeeded)
+            var result = await _userManager.CreateAsync(users, userRegisterDTO.Password);
+            if (result.Succeeded)
             {
-                var userToReturn =  _db.AppUsers.First(u => u.UserName == userRegisterDTO.Email);
+                var userToReturn = _db.AppUsers.First(u => u.UserName == userRegisterDTO.Email);
 
                 UserDTO userDTO = new()
                 {
