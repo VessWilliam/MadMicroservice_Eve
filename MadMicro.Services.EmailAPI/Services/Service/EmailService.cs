@@ -38,6 +38,11 @@ public class EmailService : IEmailService
         await LogAndEmail(message.ToString(), cartDTO.CartHeaders.Email);
     }
 
+    public async Task RegisterUserEmailAndLog(string email)
+    {
+        string message = $"User Register Success. <br/> Email : {email}";
+        await LogAndEmail(message, "admin@gmail.com");
+    }
 
     private async Task<bool> LogAndEmail(string message, string email)
     {

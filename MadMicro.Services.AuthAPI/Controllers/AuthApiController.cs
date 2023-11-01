@@ -1,4 +1,5 @@
-﻿using MadMicro.Services.AuthAPI.Models.DTO;
+﻿using MadMicro.MessageBus;
+using MadMicro.Services.AuthAPI.Models.DTO;
 using MadMicro.Services.AuthAPI.Service.IService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +11,14 @@ namespace MadMicro.Services.AuthAPI.Controllers
     public class AuthApiController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly IMessageBus _messageBus;
+        private readonly IConfiguration _configuration;
         protected ResponseDTO _response;
-        public AuthApiController(IAuthService authService)
+        public AuthApiController(IAuthService authService, IMessageBus messageBus, IConfiguration configuration)
         {
             _authService = authService;
+            _messageBus = messageBus;
+            _configuration = configuration;
             _response = new();
         }
 
@@ -27,6 +32,8 @@ namespace MadMicro.Services.AuthAPI.Controllers
                _response.Message = errorMsg;
                return BadRequest(_response);
             }
+           await _messageBus.PublishMessage(model.Email, 
+               _configuration.GetValue<string>("TopicAndQueueNames:RegisterUserQueue"));
             return Ok(_response);
         } 
         

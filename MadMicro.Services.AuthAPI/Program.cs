@@ -1,3 +1,5 @@
+using MadMicro.MessageBus;
+using MadMicro.MessageBus.Services.Service;
 using MadMicro.Services.AuthAPI.DataContext;
 using MadMicro.Services.AuthAPI.Models;
 using MadMicro.Services.AuthAPI.Service.IService;
@@ -13,14 +15,13 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-
+builder.Services.AddScoped<IMessageBus, MessageBus>();
 builder.Services.AddIdentity<AppUser,IdentityRole>().AddEntityFrameworkStores<AppDbContext>()
       .AddDefaultTokenProviders();
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("AppSettings:JwtOptions"));
 builder.Services.AddScoped<IJwtTokenGenerate, JwtTokenGenerate>();
 builder.Services.AddScoped<IAuthService,AuthService>();
 builder.Services.AddControllers();
-
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
