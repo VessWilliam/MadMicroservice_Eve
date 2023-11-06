@@ -22,6 +22,13 @@ public class ShopCartController : Controller
         return View(await LoadCartBaseOnLoginId());
     }
 
+
+    public async Task<IActionResult> CheckOut()
+    {
+        return View(await LoadCartBaseOnLoginId());
+    }
+
+
     public async Task<IActionResult> Remove(int cartDetailsId)
     {
         var userId = User.Claims.Where(u => u.Type is JwtClaimTypes.Subject)?.FirstOrDefault()?.Value;
