@@ -1,0 +1,6 @@
+@MadMicro.Service.OrderAPI_HostAddress = http://localhost:5097
+
+GET {{MadMicro.Service.OrderAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
