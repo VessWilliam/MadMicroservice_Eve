@@ -25,5 +25,9 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MadMicro.MessageBus\MadMicro.MessageBus.csproj" />
+  </ItemGroup>
+
 </Project>
  

@@ -1,11 +1,41 @@
-var builder = WebApplication.CreateBuilder(args);
+using AutoMapper;
+using MadMicro.MessageBus;
+using MadMicro.MessageBus.Services.Service;
+using MadMicro.Services.OrderAPI;
+using MadMicro.Services.OrderAPI.Extensions;
+using MadMicro.Services.OrderAPI.DataContext;
+using MadMicro.Services.OrderAPI.Services.IService;
+using MadMicro.Services.OrderAPI.Services.Service;
+using MadMicro.Services.OrderAPI.Utility;
+using Microsoft.EntityFrameworkCore;
 
-// Add services to the container.
+var builder = WebApplication.CreateBuilder(args);
+IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
+builder.Services.AddSingleton(mapper);
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddScoped<BackendApiAuthHttpClientHandler>();
+builder.Services.AddScoped<IProductService, ProductService>();
+
+builder.Services.AddScoped<IMessageBus, MessageBus>();
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddHttpClient("Product", u =>
+u.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductAPI"]))
+    .AddHttpMessageHandler<BackendApiAuthHttpClientHandler>();
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
+builder.AddAppAuthetication();
+builder.Services.AddAuthorization();
+
+
 builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
 
 var app = builder.Build();
 
@@ -18,8 +48,22 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
+ApplyMigration();
+
+
 app.Run();
+
+void ApplyMigration()
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var _db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        if (_db.Database.GetPendingMigrations().Count() > 0)
+            _db.Database.Migrate();
+    }
+}

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace MadMicro.Service.OrderAPI;
+﻿namespace MadMicro.Services.OrderAPI.Models.DTO;
 
 public class CartHeadersDTO
 {
@@ -9,10 +7,7 @@ public class CartHeadersDTO
     public string? CouponCode { get; set; }
     public double Discount { get; set; }
     public double CartTotal { get; set; }
-    [Required]
     public string? Name { get; set; }
-    [Required]
     public string? Phone { get; set; }
-    [Required]
     public string? Email { get; set; }
 }

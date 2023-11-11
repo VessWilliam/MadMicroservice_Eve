@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MadMicro.Service.OrderAPI;
+namespace MadMicro.Services.OrderAPI.Models.DTO;
 
 public class ProductDTO
 {
