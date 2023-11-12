@@ -6,14 +6,11 @@ namespace MadMicro.Web.Services.Service;
 
 public class OrderService : IOrderService
 {
-    private readonly IBaseService _baseService;
-    private readonly IOrderService _orderService;   
+    private readonly IBaseService _baseService; 
 
-    public OrderService(IBaseService baseService, 
-        IOrderService orderService)
+    public OrderService(IBaseService baseService)
     {
         _baseService = baseService;
-        _orderService = orderService;   
     }
 
     public async Task<ResponseDTO?> CreateOrderAsync(CartDTO cartDTO)

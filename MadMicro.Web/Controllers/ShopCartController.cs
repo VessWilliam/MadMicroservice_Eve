@@ -11,9 +11,11 @@ namespace MadMicro.Web.Controllers;
 public class ShopCartController : Controller
 {
     private readonly IShopCartService _cartService;
-    public ShopCartController(IShopCartService cartService)
+    private readonly IOrderService _orderService;
+    public ShopCartController(IShopCartService cartService, IOrderService orderService)
     {
         _cartService = cartService;
+        _orderService = orderService;
     }
 
     [Authorize]
@@ -22,10 +24,32 @@ public class ShopCartController : Controller
         return View(await LoadCartBaseOnLoginId());
     }
 
-
+    [Authorize]
     public async Task<IActionResult> CheckOut()
     {
         return View(await LoadCartBaseOnLoginId());
+    }
+
+    [HttpPost, Authorize, ActionName("CheckOut")]
+    public async Task<IActionResult> CheckOut(CartDTO cartDTO)
+    {
+       var cart =  await LoadCartBaseOnLoginId();
+       cart.CartHeaders.Phone = cartDTO.CartHeaders.Phone;
+       cart.CartHeaders.Email = cartDTO.CartHeaders.Email;  
+       cart.CartHeaders.Name = cartDTO.CartHeaders.Name;    
+       var res = await _orderService.CreateOrderAsync(cart);
+       var orderHeaderDTO = JsonConvert.DeserializeObject<OrderHeaderDTO?>(res.Result.ToString());
+
+
+        if ( res != null && res.IsSuccess)
+        {
+            
+            //get stripes session and redirect to stripes to place order
+        }
+
+        return View();
+
+
     }
 
 
