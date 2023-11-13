@@ -20,9 +20,9 @@ namespace MadMicro.Services.OrderAPI.Controllers
         protected ResponseDTO _response;
         private IMapper _mapper;
         private readonly AppDbContext _context;
-        private IProductsService _productService;
+        private IProductService _productService;
 
-        public OrderAPIController(AppDbContext context, IMapper mapper, IProductsService productService)
+        public OrderAPIController(AppDbContext context, IMapper mapper, IProductService productService)
         {
             _context = context;
             _mapper = mapper;
@@ -60,7 +60,6 @@ namespace MadMicro.Services.OrderAPI.Controllers
         {
             try
             {
-                StripeConfiguration.ApiKey = "sk_test_4eC39HqLyjWDarjtT1zdp7dc";
 
                 var options = new SessionCreateOptions
                 {

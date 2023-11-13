@@ -43,13 +43,25 @@ public class ShopCartController : Controller
 
         if ( res != null && res.IsSuccess)
         {
-            
+
             //get stripes session and redirect to stripes to place order
+
+            var domain = $"{Request.Scheme}://{Request.Host.Value}/";
+
+            StripeRequestDTO stripeRequestDTO = new()
+            {
+                ApprovedURL = $"{domain}cart/Confirmation?OrderId={orderHeaderDTO.OrderHeaderId}",
+                CancelURL = $"{domain}cart/CheckOut",
+                OrderHeader = orderHeaderDTO,
+                StripeSessionID = orderHeaderDTO.StripeSessionId
+            };
+
+            var stripeResponse = await _orderService.CreateStripeSessionAsync(stripeRequestDTO);
+            var stripeResult = JsonConvert.DeserializeObject<StripeRequestDTO>(stripeResponse.Result.ToString());
+            Response.Headers.Add("Location", stripeResult.StripeSessionURL);
+            return new StatusCodeResult(303);
         }
-
         return View();
-
-
     }
 
 

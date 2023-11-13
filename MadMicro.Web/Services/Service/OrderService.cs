@@ -22,4 +22,16 @@ public class OrderService : IOrderService
             Url = $"{OrderAPIBase}/api/order/CreateOrder"
         });
     }
+
+    public async Task<ResponseDTO?> CreateStripeSessionAsync(StripeRequestDTO stripeRequestDTO)
+    {
+
+        return await _baseService.SendAsync(new RequestDTO() 
+        {
+           ApiType = ApiType.POST,
+           Data = stripeRequestDTO, 
+           Url = $"{OrderAPIBase}/api/order/CreateStripeSession"
+
+        });
+    }
 }

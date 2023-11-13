@@ -2,7 +2,7 @@
 
 namespace MadMicro.Services.OrderAPI.Services.IService;
 
-public interface IProductsService
+public interface IProductService
 {
 
     Task<IEnumerable<ProductDTO>> GetProducts();

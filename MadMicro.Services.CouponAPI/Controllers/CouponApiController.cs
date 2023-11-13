@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace MadMicro.Services.CouponAPI.Controllers;
 
 [Route("api/coupon")]
@@ -99,8 +100,20 @@ public class CouponApiController : ControllerBase
             var obj = _mapper.Map<Coupon>(couponDTO);           
             await _context.Coupons.AddAsync(obj);
             await _context.SaveChangesAsync();
-            _response.Result = _mapper.Map<CouponDTO>(obj);
 
+            var options = new Stripe.CouponCreateOptions
+            {
+                AmountOff = (long)(couponDTO.DiscountAmount * 100),
+                Name = couponDTO.CouponCode,
+                Currency = "usd",
+                Id = couponDTO.CouponCode
+            };
+            var service = new Stripe.CouponService();
+            service.Create(options);
+
+
+
+            _response.Result = _mapper.Map<CouponDTO>(obj);
         }
         catch (Exception ex)
         {
@@ -146,6 +159,10 @@ public class CouponApiController : ControllerBase
             }
             _context.Coupons.Remove(obj);
             await _context.SaveChangesAsync();
+
+            var stripeService = new Stripe.CouponService();
+            stripeService.Delete(obj.CouponCode);
+
         }
         catch (Exception ex)
         {
