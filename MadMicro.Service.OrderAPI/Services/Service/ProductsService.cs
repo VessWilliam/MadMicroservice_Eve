@@ -4,11 +4,11 @@ using Newtonsoft.Json;
 
 namespace MadMicro.Services.OrderAPI.Services.Service;
 
-public class ProductService : IProductService
+public class ProductsService : IProductsService
 {
     private readonly IHttpClientFactory _httpClientFactory;
 
-    public ProductService(IHttpClientFactory httpClientFactory)
+    public ProductsService(IHttpClientFactory httpClientFactory)
     {
         _httpClientFactory = httpClientFactory;
     }
