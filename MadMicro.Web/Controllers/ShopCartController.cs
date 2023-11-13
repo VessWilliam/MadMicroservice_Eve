@@ -1,6 +1,7 @@
 ﻿using IdentityModel;
 using MadMicro.Web.Models;
 using MadMicro.Web.Services.IService;
+using MadMicro.Web.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -50,7 +51,7 @@ public class ShopCartController : Controller
 
             StripeRequestDTO stripeRequestDTO = new()
             {
-                ApprovedURL = $"{domain}cart/Confirmation?OrderId={orderHeaderDTO.OrderHeaderId}",
+                ApprovedURL = $"{domain}ShopCart/Confirmation?OrderId={orderHeaderDTO.OrderHeaderId}",
                 CancelURL = $"{domain}cart/CheckOut",
                 OrderHeader = orderHeaderDTO,
                 StripeSessionID = orderHeaderDTO.StripeSessionId
@@ -68,10 +69,16 @@ public class ShopCartController : Controller
     [Authorize]
     public async Task<IActionResult> Confirmation(int orderId)
     {
+        ResponseDTO? res = await _orderService.ValidateStripeSessionAsync(orderId);
 
+        var orderHeader =  JsonConvert.DeserializeObject<OrderHeaderDTO>(res.Result.ToString());
+        if(orderHeader.Status == StaticDetail.Status_Approved)
+        {
+            return View(orderId);
+        }
 
-
-
+        // can redirect to some error page base on status 
+        //return RedirectToAction(nameof(CartIndex));;
         return View(orderId);
     }
 
@@ -83,7 +90,7 @@ public class ShopCartController : Controller
 
         if (res is null || !res.IsSuccess) return View();
 
-        TempData["success"] = "Cart Updated Succeed";
+        TempData["success"] = "Remove Cart Succeed";
         return RedirectToAction(nameof(CartIndex));
     }
 
@@ -106,7 +113,7 @@ public class ShopCartController : Controller
 
         if (res is null || !res.IsSuccess) return View();
 
-        TempData["success"] = "Cart Updated Succeed";
+        TempData["success"] = "Apply Coupon Succeed";
         return RedirectToAction(nameof(CartIndex));
     }
 

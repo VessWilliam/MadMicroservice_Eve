@@ -9,6 +9,13 @@
         public static string OrderAPIBase { get; set; }
 
 
+        public const string Status_Pending = "Pending";
+        public const string Status_Approved = "Approved";
+        public const string Status_ReadyToPickup = "ReadyToPickup";
+        public const string Status_Completed = "Completed";
+        public const string Status_Refunded = "Refunded";
+        public const string Status_Cancelled = "Cancelled";
+
         public const string RoleAdmin = "Admin";
 
         public const string RoleCustomer = "Customer";
@@ -21,5 +28,8 @@
             PUT,
             DELETE,
         }
+
+    
+
     }
 }

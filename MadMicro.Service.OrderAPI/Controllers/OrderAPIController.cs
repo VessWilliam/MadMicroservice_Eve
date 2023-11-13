@@ -69,7 +69,17 @@ namespace MadMicro.Services.OrderAPI.Controllers
                     Mode = "payment",
                 };
 
-                foreach(var item in stripeRequestDTO.OrderHeader.OrderDetails)
+                var DiscountCoupon = new List<SessionDiscountOptions>()
+                {
+
+                    new SessionDiscountOptions()
+                    {
+                        Coupon = stripeRequestDTO.OrderHeader.CouponCode
+                    }
+
+                };
+
+                foreach (var item in stripeRequestDTO.OrderHeader.OrderDetails)
                 {
 
                     var sessionItem = new SessionLineItemOptions
@@ -87,7 +97,12 @@ namespace MadMicro.Services.OrderAPI.Controllers
                         Quantity = item.Count
                     };
 
-                    options.LineItems.Add(sessionItem); 
+                    options.LineItems.Add(sessionItem);
+                }
+
+                if (stripeRequestDTO.OrderHeader.Discount > 0)
+                {
+                    options.Discounts = DiscountCoupon;
                 }
 
                 var service = new SessionService();
@@ -96,7 +111,7 @@ namespace MadMicro.Services.OrderAPI.Controllers
                 var orderHeader = await _context.OrderHeaders
                     .FirstOrDefaultAsync(u => u.OrderHeaderId == stripeRequestDTO.OrderHeader.OrderHeaderId);
 
-                if (orderHeader is null) 
+                if (orderHeader is null)
                 {
                     _response.IsSuccess = false;
                     _response.Result = null;
@@ -107,12 +122,49 @@ namespace MadMicro.Services.OrderAPI.Controllers
                 await _context.SaveChangesAsync();
                 _response.Result = stripeRequestDTO;
                 _response.IsSuccess = true;
-             
+
             }
             catch (Exception ex)
             {
                 _response.IsSuccess = false;
-                _response.Message = ex.Message; 
+                _response.Message = ex.Message;
+            }
+
+            return _response;
+        }
+
+
+
+        [Authorize, HttpPost("ValidateStripeSession")]
+        public async Task<ResponseDTO> ValidateStripeSession([FromBody] int orderHeaderId)
+        {
+            try
+            {
+
+                var orderHeader = await _context.OrderHeaders
+                   .FirstOrDefaultAsync(u => u.OrderHeaderId == orderHeaderId);
+
+                var service = new SessionService();
+                var stripeSession = service.Get(orderHeader.StripeSessionId);
+
+                var paymentIntentService = new PaymentIntentService();
+                var paymentIntent = paymentIntentService.Get(stripeSession.PaymentIntentId);
+
+                if (paymentIntent.Status is "succeeded")
+                {
+                    //then Payment success
+                    orderHeader.PaymentIntentId = paymentIntent.Id;
+                    orderHeader.Status = StaticDetails.Status_Approved;
+                    await _context.SaveChangesAsync();
+                    _response.Result = _mapper.Map<OrderHeaderDTO>(orderHeader);
+                    _response.IsSuccess = true;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
             }
 
             return _response;
