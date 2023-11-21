@@ -18,12 +18,14 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<BackendApiAuthHttpClientHandler>();
 builder.Services.AddScoped<IProductService, ProductService>();
 
+
 builder.Services.AddScoped<IMessageBus, MessageBus>();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddHttpClient("Product", u =>
 u.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductAPI"]))
     .AddHttpMessageHandler<BackendApiAuthHttpClientHandler>();
+
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

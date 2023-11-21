@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Stripe.Checkout;
 using Stripe;
 using Microsoft.EntityFrameworkCore;
+using MadMicro.MessageBus;
 
 namespace MadMicro.Services.OrderAPI.Controllers
 {
@@ -21,13 +22,18 @@ namespace MadMicro.Services.OrderAPI.Controllers
         private IMapper _mapper;
         private readonly AppDbContext _context;
         private IProductService _productService;
+        private readonly IConfiguration _config;
+        private readonly IMessageBus _messageBus;
 
-        public OrderAPIController(AppDbContext context, IMapper mapper, IProductService productService)
+        public OrderAPIController(AppDbContext context, IMapper mapper, IProductService productService, 
+            IConfiguration config, IMessageBus messageBus)
         {
             _context = context;
             _mapper = mapper;
             _response = new ResponseDTO();
             _productService = productService;
+            _config = config;
+            _messageBus = messageBus;
         }
 
         [HttpPost("CreateOrder"), Authorize]
@@ -156,6 +162,16 @@ namespace MadMicro.Services.OrderAPI.Controllers
                     orderHeader.PaymentIntentId = paymentIntent.Id;
                     orderHeader.Status = StaticDetails.Status_Approved;
                     await _context.SaveChangesAsync();
+
+                    RewardsDTO rewardDTO = new()
+                    {
+                        OrderId = orderHeader.OrderHeaderId,
+                        RewardsActivity = Convert.ToInt32(orderHeader.OrderTotal),
+                        UserId = orderHeader.UserId
+                    };
+
+                    string topicName = _config.GetValue<string>("TopicAndQueueNames:OrderCreatedTopic")!;
+                    await _messageBus.PublishMessage(rewardDTO, topicName);
                     _response.Result = _mapper.Map<OrderHeaderDTO>(orderHeader);
                     _response.IsSuccess = true;
                 }
