@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using MadMicro.Services.RewardAPI.DataContext;
-
+using MadMicro.Services.RewardAPI.Services.Service;
+using MadMicro.Services.RewardAPI.Services.IService;
+using MadMicro.Services.RewardAPI.Messaging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +17,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+var optionBuilder = new DbContextOptionsBuilder<AppDbContext>();
+optionBuilder.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+builder.Services.AddSingleton(new RewardsService(optionBuilder.Options));
 
+
+builder.Services.AddSingleton<IAzureServiceBusConsumer, AzureServiceBusConsumer>();
 
 var app = builder.Build();
 
