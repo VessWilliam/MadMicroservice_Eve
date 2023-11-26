@@ -3,6 +3,7 @@ using MadMicro.Services.RewardAPI.DataContext;
 using MadMicro.Services.RewardAPI.Services.Service;
 using MadMicro.Services.RewardAPI.Services.IService;
 using MadMicro.Services.RewardAPI.Messaging;
+using MadMicro.Services.RewardAPI.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,7 +41,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 ApplyMigration();
-
+app.UserAzureServiceBusConsumer();
 app.Run();
 void ApplyMigration()
 {

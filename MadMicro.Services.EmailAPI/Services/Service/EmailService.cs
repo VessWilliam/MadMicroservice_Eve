@@ -1,4 +1,5 @@
 ﻿using MadMicro.Services.EmailAPI.DataContext;
+using MadMicro.Services.EmailAPI.Message;
 using MadMicro.Services.EmailAPI.Models;
 using MadMicro.Services.EmailAPI.Models.DTO;
 using MadMicro.Services.EmailAPI.Services.IService;
@@ -38,10 +39,18 @@ public class EmailService : IEmailService
         await LogAndEmail(message.ToString(), cartDTO.CartHeaders.Email);
     }
 
+    public async Task LogOrderPlaced(OrderConfirmation rewardMessage)
+    {
+
+        string message = $"New Order Placed. <br/> Order ID : {rewardMessage.OrderId} ";
+        await LogAndEmail(message, "vess1994@gmail.com");
+       
+    }
+
     public async Task RegisterUserEmailAndLog(string email)
     {
         string message = $"User Register Success. <br/> Email : {email}";
-        await LogAndEmail(message, "admin@gmail.com");
+        await LogAndEmail(message, "vess1994@gmail.com");
     }
 
     private async Task<bool> LogAndEmail(string message, string email)
