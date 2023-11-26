@@ -36,6 +36,62 @@ namespace MadMicro.Services.OrderAPI.Controllers
             _messageBus = messageBus;
         }
 
+
+
+        [HttpGet("GetOrders"), Authorize]
+
+        public async Task<ResponseDTO> GetOrders(string? userId = "")
+        {
+
+            try
+            {
+                IEnumerable<OrderHeader> orderHeadersList = await _context.OrderHeaders
+                 .Include(u => u.OrderDetails)
+                 .OrderByDescending(u => u.OrderHeaderId)
+                 .ToListAsync();
+
+                orderHeadersList = User.IsInRole(StaticDetails.RoleAdmin) ? orderHeadersList : orderHeadersList.Where(u => u.UserId == userId);
+
+                _response.Result = _mapper.Map<IEnumerable<OrderHeaderDTO>>(orderHeadersList);
+
+                return _response;
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+                return _response;   
+                throw;
+            }
+        }
+
+
+        [HttpGet("GetOrder/{id:int}"), Authorize]
+
+        public async Task<ResponseDTO> GetOrder(int id)
+        {
+
+            try
+            {
+
+                var orderHeader = await _context.OrderHeaders.Include(u => u.OrderDetails).FirstAsync(u => u.OrderHeaderId == id);
+                _response.Result = _mapper.Map<OrderHeaderDTO>(orderHeader);
+                _response.IsSuccess = true;
+
+                return _response;
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+                return _response;
+                throw;
+            }
+        }
+
+
+
+
         [HttpPost("CreateOrder"), Authorize]
         public async Task<ResponseDTO> CreateOrder([FromBody] CartDTO cartDTO)
         {
