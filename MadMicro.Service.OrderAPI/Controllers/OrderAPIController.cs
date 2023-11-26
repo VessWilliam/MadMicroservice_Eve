@@ -38,9 +38,9 @@ namespace MadMicro.Services.OrderAPI.Controllers
 
 
 
-        [HttpGet("GetOrders"), Authorize]
+        [HttpGet("GetOrders/{userId}"), Authorize]
 
-        public async Task<ResponseDTO> GetOrders(string? userId = "")
+        public async Task<ResponseDTO> GetOrders(string? userId)
         {
 
             try
