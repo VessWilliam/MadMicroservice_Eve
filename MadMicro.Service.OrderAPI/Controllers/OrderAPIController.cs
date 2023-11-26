@@ -90,8 +90,6 @@ namespace MadMicro.Services.OrderAPI.Controllers
         }
 
 
-
-
         [HttpPost("CreateOrder"), Authorize]
         public async Task<ResponseDTO> CreateOrder([FromBody] CartDTO cartDTO)
         {
@@ -196,8 +194,7 @@ namespace MadMicro.Services.OrderAPI.Controllers
         }
 
 
-
-        [Authorize, HttpPost("ValidateStripeSession")]
+        [HttpPost("ValidateStripeSession") , Authorize]
         public async Task<ResponseDTO> ValidateStripeSession([FromBody] int orderHeaderId)
         {
             try
@@ -240,6 +237,45 @@ namespace MadMicro.Services.OrderAPI.Controllers
             }
 
             return _response;
+        }
+
+
+        [HttpPost("UpdateOrderStatus/{orderId:int}") , Authorize]
+        public async Task<ResponseDTO> UpdateOrderStatus(int orderId, [FromBody] string newStatus)
+        {
+            try
+            {
+                var orderHeader = await _context.OrderHeaders.FirstAsync(u => u.OrderHeaderId == orderId);
+
+                if (orderHeader == null) return _response;
+
+
+                if(newStatus == StaticDetails.Status_Cancelled)
+                {
+
+                    var options = new RefundCreateOptions
+                    {
+                        Reason = RefundReasons.RequestedByCustomer,
+                        PaymentIntent = orderHeader.PaymentIntentId
+                    };
+
+                    var service = new RefundService();  
+                    var refund = service.Create(options);
+
+                }
+                orderHeader.Status = newStatus;
+                await _context.SaveChangesAsync();
+                _response.IsSuccess = true;
+                return _response;   
+            }
+            catch (Exception ex)
+            {
+
+                 _response.IsSuccess = false;
+                 _response.Message = ex.Message; 
+                return  _response;  
+                throw;
+            }
         }
 
     }
