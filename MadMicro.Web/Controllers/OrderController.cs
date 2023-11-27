@@ -22,6 +22,24 @@ namespace MadMicro.Web.Controllers
             return View();
         }
 
+        public async Task<IActionResult> OrderDetail(int orderId)
+        {
+
+            var orderHeaderDto = new OrderHeaderDTO();
+
+            string userId = User.Claims.FirstOrDefault(u => u.Type is JwtRegisteredClaimNames.Sub).Value;
+
+            var res = await _orderService.GetOrder(orderId);
+
+            if (res is not null && res.IsSuccess)
+                orderHeaderDto = JsonConvert.DeserializeObject<OrderHeaderDTO>(res.Result!.ToString()!);
+
+            if(User.IsInRole(StaticDetail.RoleAdmin) && userId != orderHeaderDto.UserId)
+                return NotFound();
+
+            return View(orderHeaderDto);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAll() 
         {
@@ -31,7 +49,7 @@ namespace MadMicro.Web.Controllers
 
             if(!User.IsInRole(StaticDetail.RoleAdmin))
             {
-                userId = User.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Sub).Value;
+                userId = User.Claims.FirstOrDefault(u => u.Type is JwtRegisteredClaimNames.Sub).Value;
             }
 
             var res = await _orderService.GetOrders(userId);
