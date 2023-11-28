@@ -1,4 +1,5 @@
-﻿using MadMicro.Web.Models;
+﻿using IdentityModel;
+using MadMicro.Web.Models;
 using MadMicro.Web.Services.IService;
 using MadMicro.Web.Utility;
 using Microsoft.AspNetCore.Mvc;
@@ -34,7 +35,7 @@ namespace MadMicro.Web.Controllers
             if (res is not null && res.IsSuccess)
                 orderHeaderDto = JsonConvert.DeserializeObject<OrderHeaderDTO>(res.Result!.ToString()!);
 
-            if(User.IsInRole(StaticDetail.RoleAdmin) && userId != orderHeaderDto.UserId)
+            if(!User.IsInRole(StaticDetail.RoleAdmin) && userId != orderHeaderDto.UserId)
                 return NotFound();
 
             return View(orderHeaderDto);
@@ -47,10 +48,9 @@ namespace MadMicro.Web.Controllers
 
             string userId = string.Empty;
 
-            if(!User.IsInRole(StaticDetail.RoleAdmin))
-            {
-                userId = User.Claims.FirstOrDefault(u => u.Type is JwtRegisteredClaimNames.Sub).Value;
-            }
+          
+            userId = User.Claims.FirstOrDefault(u => u.Type is JwtRegisteredClaimNames.Sub).Value;
+            
 
             var res = await _orderService.GetOrders(userId);
 
@@ -60,6 +60,40 @@ namespace MadMicro.Web.Controllers
 
             return  Json(new { data = orderHeaderList });
         
+        }
+
+        [HttpPost("OrderReadyForPickup")]
+        public async Task<IActionResult> OrderReadyForPickup(int orderId)
+        {
+            var res = await _orderService.UpdateOrderStatus(orderId, StaticDetail.Status_ReadyToPickup);
+            if (res is null && !res.IsSuccess) return View();
+
+            
+            TempData["success"] = "Status Updated Successful";
+            return RedirectToAction(nameof(OrderDetail), new { orderId });
+        } 
+        
+        [HttpPost("CompleteOrder")]
+        public async Task<IActionResult> CompleteOrder(int orderId)
+        {
+            var res = await _orderService.UpdateOrderStatus(orderId, StaticDetail.Status_Completed);
+            if (res is null && !res.IsSuccess) return View();
+
+            
+            TempData["success"] = "Status Updated Successful";
+            return RedirectToAction(nameof(OrderDetail), new { orderId });
+        }
+
+
+        [HttpPost("CancelOrder")]
+        public async Task<IActionResult> CancelOrder(int orderId)
+        {
+            var res = await _orderService.UpdateOrderStatus(orderId, StaticDetail.Status_Cancelled);
+            if (res is null && !res.IsSuccess) return View();
+
+
+            TempData["success"] = "Status Updated Successful";
+            return RedirectToAction(nameof(OrderDetail), new { orderId });
         }
 
     }

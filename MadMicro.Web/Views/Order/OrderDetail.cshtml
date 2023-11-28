@@ -2,7 +2,7 @@
 @using MadMicro.Web.Utility
 <form method="post">
     <br />
-    <input asp-for="OrderHeaderId" hidden/>
+    <input asp-for="OrderHeaderId" hidden />
     <div class="container">
         <div class="card">
             <div class="card-header bg-dark text-light ml-0">
@@ -46,22 +46,22 @@
                                 </div>
                             </div>
 
-                            @if(User.IsInRole(StaticDetail.RoleAdmin))
+                            @if (User.IsInRole(StaticDetail.RoleAdmin))
                             {
                                 <div class="row my-1">
                                     <div class="col-3">Session ID</div>
                                     <div class="col-9">
-                                        <input readonly class="form-control" />
+                                        <input asp-for="StripeSessionId" readonly class="form-control" />
                                     </div>
                                 </div>
                                 <div class="row my-1">
                                     <div class="col-3">Payment Intent ID</div>
                                     <div class="col-9">
-                                        <input readonly class="form-control" />
+                                        <input asp-for="PaymentIntentId" readonly class="form-control" />
                                     </div>
                                 </div>
                             }
-                           
+
 
                             <div class="row my-1">
                                 <div class="col-3">Order Status</div>
@@ -78,7 +78,7 @@
                             <label class="bg-info text-dark text-center form-control my-2">Order Status - @Model.Status </label>
 
                             <ul class="list-group mb-3">
-                                 @foreach(var item in Model.OrderDetails)
+                                @foreach (var item in Model.OrderDetails)
                                 {
                                     <li class="list-group-item d-flex justify-content-between p-2">
                                         <div class="row container">
@@ -93,23 +93,36 @@
                                             </div>
                                         </div>
                                     </li>
-
-                                    <li class="list-group-item bg-primary">
-                                        <div class="row container">
-                                            <div class="col-6">
-                                                <h5 class="text-white">TOTAL </h5>
-                                            </div>
-                                            <div class="col-6 text-end">
-                                                <h5 class="text-white">OrderTotal</h5>
-                                            </div>
-                                        </div>
-                                    </li>
                                 }
-                                
+                                <li class="list-group-item bg-primary">
+                                    <div class="row container">
+                                        <div class="col-6">
+                                            <h5 class="text-white">TOTAL </h5>
+                                        </div>
+                                        <div class="col-6 text-end">
+                                            <h5 class="text-white">@Model.OrderTotal.ToString("c")</h5>
+                                        </div>
+                                    </div>
+                                </li>
                             </ul>
 
-                            <button type="submit" class="btn btn-success form-control my-1">Ready for Pickup</button>
-                            <button type="submit" class="btn btn-danger form-control my-1">Cancel Order</button>
+                            @if (User.IsInRole(StaticDetail.RoleAdmin))
+                            {
+
+                                @switch (Model.Status)
+                                {
+                                    case StaticDetail.Status_Approved:
+                                        <button asp-action="OrderReadyForPickup" asp-route-orderId="@Model.OrderHeaderId" type="submit" class="btn btn-success form-control my-1">Ready for Pickup</button>
+                                        <button asp-action="CancelOrder" asp-route-orderId="@Model.OrderHeaderId" type="submit" class="btn btn-danger form-control my-1">Cancel</button>
+                                        break;
+                                    case StaticDetail.Status_ReadyToPickup:
+                                        <button asp-action="CompleteOrder" asp-route-orderId="@Model.OrderHeaderId" type="submit" class="btn btn-success form-control my-1">Complete Order</button>
+                                        <button asp-action="CancelOrder" asp-route-orderId="@Model.OrderHeaderId" type="submit" class="btn btn-danger form-control my-1">Cancel</button>
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
                         </div>
                     </div>
                 </div>
