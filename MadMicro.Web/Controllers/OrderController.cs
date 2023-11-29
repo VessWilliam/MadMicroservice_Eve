@@ -42,7 +42,7 @@ namespace MadMicro.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll() 
+        public async Task<IActionResult> GetAll(string status) 
         {
             IEnumerable<OrderHeaderDTO> orderHeaderList;
 
@@ -57,6 +57,22 @@ namespace MadMicro.Web.Controllers
 
             orderHeaderList = (res != null && res.IsSuccess) ? orderHeaderList = 
                 orderHeaderList = JsonConvert.DeserializeObject<List<OrderHeaderDTO>>(res.Result!.ToString()!)! : new List<OrderHeaderDTO>();
+
+            switch (status)
+            {
+                case StaticDetail.Status_Approved:
+                    orderHeaderList = orderHeaderList.Where(u => u.Status is StaticDetail.Status_Approved);
+                    break;
+                case StaticDetail.Status_ReadyToPickup:
+                      orderHeaderList = orderHeaderList.Where(u => u.Status is StaticDetail.Status_ReadyToPickup);
+                    break;
+                case StaticDetail.Status_Cancelled:
+                    orderHeaderList = orderHeaderList.Where(u => u.Status is StaticDetail.Status_Cancelled);
+                    break;
+
+                default:
+                    break;
+            }
 
             return  Json(new { data = orderHeaderList });
         

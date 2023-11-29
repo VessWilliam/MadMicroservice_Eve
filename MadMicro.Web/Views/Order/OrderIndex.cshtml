@@ -1,12 +1,49 @@
-﻿<div class="card shadow border-0 mt-4">
+﻿@{
+    var status = Context.Request.Query["status"];
+    var Approved = "";
+    var ReadyToPickup = "";
+    var Cancelled = "";
+    var All = "";
 
-    <div class="card-header bg-body bg-gradient ml-0 py-3">
+    switch (status)
+    {
+        case nameof(Approved):
+            Approved = "active text-white bg-secondary";
+            break; 
+        case nameof(ReadyToPickup):
+            ReadyToPickup = "active text-white bg-secondary";
+            break;
+        case nameof(Cancelled):
+            Cancelled = "active text-white bg-secondary";
+            break; 
+        default:
+            All = "active text-white bg-secondary";
+            break;
+    }
+}
+
+<div class="card shadow border-0 mt-4">
+
+    <div class="card-header bg-body bg-gradient ml-0 py-3 d-flex justify-content-between">
 
         <div class="row">
 
             <h1 class="text-white-50"> Order List</h1>
-
         </div>
+        <ul class="list-group list-group-horizontal-sm pt-2">
+            <a style="text-decoration:none" asp-controller="Order" asp-action="OrderIndex" asp-route-status="Approved">
+            <li class="list-group-item @Approved ">Approved</li>
+            </a>
+            <a style="text-decoration:none" asp-controller="Order" asp-action="OrderIndex" asp-route-status="ReadyToPickup">
+            <li class="list-group-item @ReadyToPickup ">Ready For Pick Up</li>
+            </a>
+            <a style="text-decoration:none" asp-controller="Order" asp-action="OrderIndex" asp-route-status="Cancelled">
+            <li class="list-group-item @Cancelled ">Cancelled</li>
+            </a>
+            <a style="text-decoration:none" asp-controller="Order" asp-action="OrderIndex" asp-route-status="All">
+            <li class="list-group-item @All ">All</li>
+            </a>
+        </ul>
     </div>
 
     <div class="card-body p-4">
