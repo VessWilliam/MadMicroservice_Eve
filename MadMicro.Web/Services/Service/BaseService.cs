@@ -22,10 +22,22 @@ namespace MadMicro.Web.Services.Service
         public async Task<ResponseDTO?> SendAsync(RequestDTO requestDTO, bool withBearer = true)
         {
             try
-            { 
+            {
                 var client = _httpClientFactory.CreateClient("MadMicroAPI");
                 HttpRequestMessage message = new();
-                message.Headers.Add("Accept", "application/json");
+
+                switch (requestDTO.ContentType)
+                {
+                    case ContentType.Json:
+                        message.Headers.Add("Accept", "application/json");
+                        break;
+                    case ContentType.MultipartFromData:
+                        message.Headers.Add("Accept", "*/*");
+                        break;
+                    default:
+                        break;
+                }
+
 
                 //token
                 if (withBearer)
@@ -36,10 +48,33 @@ namespace MadMicro.Web.Services.Service
 
                 message.RequestUri = new Uri(requestDTO.Url);
 
-                if (requestDTO.Data != null)
+                switch (requestDTO.ContentType)
                 {
-                    message.Content = new StringContent(JsonConvert.SerializeObject(requestDTO.Data), Encoding.UTF8, "application/json");
+                    case ContentType.Json:
+
+                        if (requestDTO.Data is null) message.Content = null;
+
+                        message.Content = new StringContent(JsonConvert.SerializeObject(requestDTO.Data), Encoding.UTF8, "application/json");
+
+                        break;
+                    case ContentType.MultipartFromData:
+                        var content = new MultipartFormDataContent();
+
+                        foreach (var item in requestDTO.Data.GetType().GetProperties())
+                        {
+                            var value = item.GetValue(requestDTO.Data);
+                            if (value is FormFile)
+                            {
+                                var file = (FormFile)value;
+
+                                if (file is null) break;
+
+                                content.Add(new StreamContent(file.OpenReadStream()), item.Name, file.FileName);
+                            }
+                        }
+                        break;
                 }
+
 
                 HttpResponseMessage? apiResponse = null;
 

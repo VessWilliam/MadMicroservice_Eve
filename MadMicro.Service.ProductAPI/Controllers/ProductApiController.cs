@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace MadMicro.Services.ProductAPI.Controllers;
 
-[Route("api/product")]
-[ApiController]
+[ApiController,Route("api/product")]
 public class ProductApiController : ControllerBase
 {
     private readonly AppDbContext _context;
@@ -40,15 +40,14 @@ public class ProductApiController : ControllerBase
         return _response;
     }
 
-    [HttpGet]
-    [Route("{id:int}")]
+    [HttpGet ,Route("{id:int}")]
     public async Task<ResponseDTO> Get(int id)
     {
 
         try
         {
             var obj = await _context.Products.FirstOrDefaultAsync(p => p.ProductId == id);
-            if (obj == null)
+            if (obj is null)
             {
                 _response.IsSuccess = false;
                 _response.Message = "No data Valid";
@@ -67,16 +66,41 @@ public class ProductApiController : ControllerBase
     }
 
 
-    [HttpPost]
-    [Authorize(Roles = "ADMIN")]
+    [HttpPost ,Authorize(Roles = "ADMIN")]
     public async Task<ResponseDTO> CreateNewProduct([FromBody] ProductDTO productDTO)
     {
         try
         {
-            var obj = _mapper.Map<Product>(productDTO);
-            await _context.Products.AddAsync(obj);
+            var product = _mapper.Map<Product>(productDTO);
+            await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
-            _response.Result = _mapper.Map<ProductDTO>(obj);
+
+            if (productDTO.Image is not null)
+            {
+                var filename = $"{product.ProductId}{Path.GetExtension(productDTO.Image.FileName)}";
+                var filePath = $@"wwwroot\ProductImages\{filename}";
+                var filePathDirectory = Path.Combine(Directory.GetCurrentDirectory(), filename);
+                using var fileStream = new FileStream(filePathDirectory, FileMode.Create);
+
+                var baseURL = $@"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}
+                                       {HttpContext.Request.PathBase.Value}";
+
+                product.ImageUrl = $"{baseURL}/ProductImages/{filePath}";
+
+                productDTO.Image.CopyTo(fileStream);
+                product.ImageLocalPath = filePath;
+
+            }
+            else
+            {
+                product.ImageUrl = "https://placehold.co/600x400";
+            }
+
+
+            _context.Update(product);
+            await _context.SaveChangesAsync();
+            _response.Result = _mapper.Map<ProductDTO>(product);
+            return _response;
 
         }
         catch (Exception ex)
@@ -85,11 +109,9 @@ public class ProductApiController : ControllerBase
             _response.Message = ex.Message;
             throw;
         }
-        return _response;
     }
 
-    [HttpPut]
-    [Authorize(Roles = "ADMIN")]
+    [HttpPut,Authorize(Roles = "ADMIN")]
     public async Task<ResponseDTO> UpdateProduct([FromBody] ProductDTO productDTO)
     {
         try
@@ -109,15 +131,13 @@ public class ProductApiController : ControllerBase
         return _response;
     }
 
-    [HttpDelete]
-    [Route("{id:int}")]
-    [Authorize(Roles = "ADMIN")]
+    [HttpDelete ,Route("{id:int}") ,Authorize(Roles = "ADMIN")]
     public async Task<ResponseDTO> DeleteProduct(int id)
     {
         try
         {
             var obj = await _context.Products.FirstOrDefaultAsync(p => p.ProductId == id);
-            if (obj == null)
+            if (obj is null)
             {
                 _response.IsSuccess = false;
                 _response.Message = "No data Valid";

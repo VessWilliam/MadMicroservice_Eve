@@ -9,5 +9,7 @@ namespace MadMicro.Web.Models
         public string? AccessToken { get; set; }
         public object? Data { get; set; }
 
+        public ContentType ContentType { get; set; } = ContentType.Json;
+
     }
 }

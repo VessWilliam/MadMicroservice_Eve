@@ -31,6 +31,11 @@
             DELETE,
         }
 
+        public enum ContentType
+        {
+            Json,
+            MultipartFromData
+        }
     
 
     }
