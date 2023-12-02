@@ -63,18 +63,25 @@ namespace MadMicro.Web.Services.Service
                         foreach (var item in requestDTO.Data.GetType().GetProperties())
                         {
                             var value = item.GetValue(requestDTO.Data);
-                            if (value is FormFile)
+
+                            switch (value)
                             {
-                                var file = (FormFile)value;
+                                case FormFile:
+                                    var file = (FormFile)value;
 
-                                if (file is null) break;
+                                    if (file is null) break;
 
-                                content.Add(new StreamContent(file.OpenReadStream()), item.Name, file.FileName);
+                                    content.Add(new StreamContent(file.OpenReadStream()), item.Name, file.FileName);
+                                    break;
+
+                                default:
+                                    content.Add(new StringContent(value is null ? string.Empty : value.ToString()!), item.Name);
+                                    break;
                             }
                         }
+                        message.Content = content;
                         break;
                 }
-
 
                 HttpResponseMessage? apiResponse = null;
 

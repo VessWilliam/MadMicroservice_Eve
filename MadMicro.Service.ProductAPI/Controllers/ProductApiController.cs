@@ -67,7 +67,7 @@ public class ProductApiController : ControllerBase
 
 
     [HttpPost ,Authorize(Roles = "ADMIN")]
-    public async Task<ResponseDTO> CreateNewProduct([FromBody] ProductDTO productDTO)
+    public async Task<ResponseDTO> CreateNewProduct(ProductDTO productDTO)
     {
         try
         {
@@ -77,18 +77,17 @@ public class ProductApiController : ControllerBase
 
             if (productDTO.Image is not null)
             {
-                var filename = $"{product.ProductId}{Path.GetExtension(productDTO.Image.FileName)}";
-                var filePath = $@"wwwroot\ProductImages\{filename}";
-                var filePathDirectory = Path.Combine(Directory.GetCurrentDirectory(), filename);
+                var fileName = $"{product.ProductId}{Path.GetExtension(productDTO.Image.FileName)}";
+                var filePath = $@"wwwroot/ProductImages/{fileName}";
+                var filePathDirectory = Path.Combine(Directory.GetCurrentDirectory(), filePath);
                 using var fileStream = new FileStream(filePathDirectory, FileMode.Create);
 
-                var baseURL = $@"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}
-                                       {HttpContext.Request.PathBase.Value}";
+                var baseURL = $@"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}{HttpContext.Request.PathBase.Value}";
 
-                product.ImageUrl = $"{baseURL}/ProductImages/{filePath}";
+                product.ImageUrl = $"{baseURL.Trim()}/ProductImages/{fileName.Trim()}";
 
                 productDTO.Image.CopyTo(fileStream);
-                product.ImageLocalPath = filePath;
+                product.ImageLocalPath = filePath.Trim();
 
             }
             else
@@ -137,12 +136,18 @@ public class ProductApiController : ControllerBase
         try
         {
             var obj = await _context.Products.FirstOrDefaultAsync(p => p.ProductId == id);
-            if (obj is null)
+            if (obj is null || string.IsNullOrEmpty(obj.ImageLocalPath))
             {
                 _response.IsSuccess = false;
                 _response.Message = "No data Valid";
                 return _response;
             }
+
+            var oldFileDirectory = Path.Combine(Directory.GetCurrentDirectory(), obj.ImageLocalPath);
+            var fileInfo = new FileInfo(oldFileDirectory);
+
+            if (fileInfo.Exists) fileInfo.Delete();
+            
             _context.Products.Remove(obj);  
             await _context.SaveChangesAsync();  
         }
