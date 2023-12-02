@@ -111,14 +111,37 @@ public class ProductApiController : ControllerBase
     }
 
     [HttpPut,Authorize(Roles = "ADMIN")]
-    public async Task<ResponseDTO> UpdateProduct([FromBody] ProductDTO productDTO)
+    public async Task<ResponseDTO> UpdateProduct(ProductDTO productDTO)
     {
         try
         {
-            var obj = _mapper.Map<Product>(productDTO);
-            _context.Products.Update(obj);
+            var product = _mapper.Map<Product>(productDTO);
+            if (productDTO.Image is not null)
+            {
+
+                var oldFileDirectory = Path.Combine(Directory.GetCurrentDirectory(), product.ImageLocalPath!);
+                var fileInfo = new FileInfo(oldFileDirectory);
+
+                if (fileInfo.Exists) fileInfo.Delete();
+
+
+                var fileName = $"{product.ProductId}{Path.GetExtension(productDTO.Image.FileName)}";
+                var filePath = $@"wwwroot/ProductImages/{fileName}";
+                var filePathDirectory = Path.Combine(Directory.GetCurrentDirectory(), filePath);
+                using var fileStream = new FileStream(filePathDirectory, FileMode.Create);
+
+                var baseURL = $@"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}{HttpContext.Request.PathBase.Value}";
+
+                product.ImageUrl = $"{baseURL.Trim()}/ProductImages/{fileName.Trim()}";
+
+                productDTO.Image.CopyTo(fileStream);
+                product.ImageLocalPath = filePath.Trim();
+
+            }
+
+            _context.Products.Update(product);
             await _context.SaveChangesAsync();
-            _response.Result = _mapper.Map<ProductDTO>(obj);
+            _response.Result = _mapper.Map<ProductDTO>(product);
 
         }
         catch (Exception ex)
@@ -135,21 +158,22 @@ public class ProductApiController : ControllerBase
     {
         try
         {
-            var obj = await _context.Products.FirstOrDefaultAsync(p => p.ProductId == id);
-            if (obj is null || string.IsNullOrEmpty(obj.ImageLocalPath))
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.ProductId == id);
+            if (product is null || string.IsNullOrEmpty(product.ImageLocalPath))
             {
                 _response.IsSuccess = false;
                 _response.Message = "No data Valid";
                 return _response;
             }
 
-            var oldFileDirectory = Path.Combine(Directory.GetCurrentDirectory(), obj.ImageLocalPath);
+            var oldFileDirectory = Path.Combine(Directory.GetCurrentDirectory(), product.ImageLocalPath);
             var fileInfo = new FileInfo(oldFileDirectory);
 
             if (fileInfo.Exists) fileInfo.Delete();
             
-            _context.Products.Remove(obj);  
+            _context.Products.Remove(product);  
             await _context.SaveChangesAsync();  
+            return _response;
         }
         catch (Exception ex)
         {
@@ -157,6 +181,5 @@ public class ProductApiController : ControllerBase
             _response.Message = ex.Message;
             throw;
         }
-        return _response;
     }
 }

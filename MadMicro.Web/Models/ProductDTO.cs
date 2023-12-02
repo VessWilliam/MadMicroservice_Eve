@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MadMicro.Web.Utility;
+using System.ComponentModel.DataAnnotations;
 
 namespace MadMicro.Web.Models;
 
@@ -15,6 +16,8 @@ public class ProductDTO
     [Range(1,100)]
     public int Count { get; set; } = 1;
 
+    [MaxFileSize(1)]
+    [AllowedExtensions([ ".jpg", ".png" ])]
     public IFormFile? Image {  get; set; }  
 
 }
