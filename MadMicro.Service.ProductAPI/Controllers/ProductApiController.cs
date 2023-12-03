@@ -118,11 +118,13 @@ public class ProductApiController : ControllerBase
             var product = _mapper.Map<Product>(productDTO);
             if (productDTO.Image is not null)
             {
+                if(!string.IsNullOrEmpty(product.ImageLocalPath))
+                {
+                    var oldFileDirectory = Path.Combine(Directory.GetCurrentDirectory(), product.ImageLocalPath!);
+                    var fileInfo = new FileInfo(oldFileDirectory);
 
-                var oldFileDirectory = Path.Combine(Directory.GetCurrentDirectory(), product.ImageLocalPath!);
-                var fileInfo = new FileInfo(oldFileDirectory);
-
-                if (fileInfo.Exists) fileInfo.Delete();
+                    if (fileInfo.Exists) fileInfo.Delete();
+                }
 
 
                 var fileName = $"{product.ProductId}{Path.GetExtension(productDTO.Image.FileName)}";
