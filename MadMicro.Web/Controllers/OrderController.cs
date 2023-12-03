@@ -2,6 +2,7 @@
 using MadMicro.Web.Models;
 using MadMicro.Web.Services.IService;
 using MadMicro.Web.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
@@ -13,16 +14,13 @@ namespace MadMicro.Web.Controllers
 
         private readonly IOrderService _orderService;
 
-        public OrderController(IOrderService orderService)
-        {
-            _orderService = orderService;
-        }
+        public OrderController(IOrderService orderService) =>  _orderService = orderService;
 
-        public IActionResult OrderIndex()
-        {
-            return View();
-        }
+        [Authorize]
+        public IActionResult OrderIndex() => View();
 
+
+        [Authorize]
         public async Task<IActionResult> OrderDetail(int orderId)
         {
 

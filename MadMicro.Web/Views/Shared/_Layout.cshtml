@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using MadMicro.Web.Utility
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -25,6 +26,9 @@
                         <li class="nav-item">
                             <a class="nav-link " asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
+                        @if(User.IsInRole(StaticDetail.RoleAdmin))
+                        {
+                            
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Content Management
@@ -35,6 +39,7 @@
                                 <li><hr class="dropdown-divider"></li>
                             </ul>
                         </li>
+                        }
                         <li class="nav-item">
                             <a class="nav-link " asp-area="" asp-controller="Order" asp-action="OrderIndex">
                                 Manage Orders
