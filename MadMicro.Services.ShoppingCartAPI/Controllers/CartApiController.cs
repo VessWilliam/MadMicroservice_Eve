@@ -3,6 +3,7 @@ using MadMicro.MessageBus;
 using MadMicro.Services.ShoppingCartAPI.DataContext;
 using MadMicro.Services.ShoppingCartAPI.Models;
 using MadMicro.Services.ShoppingCartAPI.Models.DTO;
+using MadMicro.Services.ShoppingCartAPI.RabbitMQSender.IService;
 using MadMicro.Services.ShoppingCartAPI.Services.IService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,18 +20,21 @@ public class CartApiController : ControllerBase
     private IMapper _mapper;
     private readonly IProductService _productService;
     private readonly ICouponService _couponService;
-    private readonly IMessageBus _messageBus;
     private readonly IConfiguration _configuration;
     private readonly AppDbContext _context;
+    private readonly IRabbitMQShoppingCartMessageSender _rabbitMQSender;
+    private readonly IMessageBus _messageBus;
 
     public CartApiController(AppDbContext context, IMapper mapper, 
-        IProductService productService, ICouponService couponService, IMessageBus messageBus, IConfiguration configuration)
+        IProductService productService, ICouponService couponService, 
+        IRabbitMQShoppingCartMessageSender rabbitMQSender, 
+        IConfiguration configuration)
     {
         _context = context;
         _mapper = mapper;
         _productService = productService;
         _couponService = couponService;
-        _messageBus = messageBus;
+        _rabbitMQSender = rabbitMQSender;
         _configuration = configuration;
         _response = new();
 
@@ -64,7 +68,7 @@ public class CartApiController : ControllerBase
     {
         try
         {
-            await _messageBus.PublishMessage(cartDTO, 
+           _rabbitMQSender.SendMessage(cartDTO, 
                 _configuration.GetValue<string>("TopicAndQueueNames:EmailShoppingCartQueue") ?? string.Empty);
             _response.Result = true;
         }

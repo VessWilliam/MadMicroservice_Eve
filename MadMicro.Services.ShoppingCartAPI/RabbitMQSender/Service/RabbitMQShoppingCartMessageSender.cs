@@ -1,11 +1,11 @@
-﻿using MadMicro.Services.AuthAPI.RabbitMQSender.IService;
+﻿using MadMicro.Services.ShoppingCartAPI.RabbitMQSender.IService;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using System.Text;
 
-namespace MadMicro.Services.AuthAPI.RabbitMQSender.Service;
+namespace MadMicro.Services.ShoppingCartAPI.RabbitMQSender.Service;
 
-public class RabbitMQAuthMessageSender : IRabbitMQAuthMessageSender
+public class RabbitMQShoppingCartMessageSender : IRabbitMQShoppingCartMessageSender
 {
 
     private readonly string _hostName;
@@ -13,7 +13,7 @@ public class RabbitMQAuthMessageSender : IRabbitMQAuthMessageSender
     private readonly string _passWord;
     private IConnection _connection;
 
-    public RabbitMQAuthMessageSender()
+    public RabbitMQShoppingCartMessageSender()
     {
         _hostName = "localhost";
         _userName = "guest";
