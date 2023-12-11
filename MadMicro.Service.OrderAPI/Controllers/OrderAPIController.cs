@@ -10,6 +10,7 @@ using Stripe.Checkout;
 using Stripe;
 using Microsoft.EntityFrameworkCore;
 using MadMicro.MessageBus;
+using MadMicro.Services.OrderAPI.RabbitMQSender.IService;
 
 namespace MadMicro.Services.OrderAPI.Controllers
 {
@@ -24,16 +25,17 @@ namespace MadMicro.Services.OrderAPI.Controllers
         private IProductService _productService;
         private readonly IConfiguration _config;
         private readonly IMessageBus _messageBus;
+        private readonly IRabbitMQOrderMessageSender _rabbitMQSender;
 
         public OrderAPIController(AppDbContext context, IMapper mapper, IProductService productService, 
-            IConfiguration config, IMessageBus messageBus)
+            IConfiguration config, IRabbitMQOrderMessageSender rabbitMQSender)
         {
             _context = context;
             _mapper = mapper;
             _response = new ResponseDTO();
             _productService = productService;
             _config = config;
-            _messageBus = messageBus;
+            _rabbitMQSender = rabbitMQSender;
         }
 
 
@@ -224,7 +226,7 @@ namespace MadMicro.Services.OrderAPI.Controllers
                     };
 
                     string topicName = _config.GetValue<string>("TopicAndQueueNames:OrderCreatedTopic")!;
-                    await _messageBus.PublishMessage(rewardDTO, topicName);
+                    await _rabbitMQSender.SendMessage(rewardDTO, topicName);
                     _response.Result = _mapper.Map<OrderHeaderDTO>(orderHeader);
                     _response.IsSuccess = true;
                 }

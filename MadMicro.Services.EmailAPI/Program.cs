@@ -21,8 +21,14 @@ var optionBuilder = new DbContextOptionsBuilder<AppDbContext>();
 optionBuilder.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 builder.Services.AddSingleton(new EmailService(optionBuilder.Options));
 
+//RabbitMQ
+builder.Services.AddHostedService<RabbitMQAuthConsumer>();
+builder.Services.AddHostedService<RabbitMQShoppingCartConsumer>();
+
+//Azure Bus
 builder.Services.AddSingleton<IAzureServiceBusConsumer, AzureServiceBusConsumer>();
 var app = builder.Build();
+
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>
@@ -30,7 +36,6 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Email API");
     c.RoutePrefix = string.Empty;
 });
-
 
 app.UseHttpsRedirection();
 

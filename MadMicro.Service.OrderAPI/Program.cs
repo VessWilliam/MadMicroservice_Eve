@@ -8,6 +8,8 @@ using MadMicro.Services.OrderAPI.Services.IService;
 using MadMicro.Services.OrderAPI.Services.Service;
 using MadMicro.Services.OrderAPI.Utility;
 using Microsoft.EntityFrameworkCore;
+using MadMicro.Services.OrderAPI.RabbitMQSender.IService;
+using MadMicro.Services.OrderAPI.RabbitMQSender.Service;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,7 +21,8 @@ builder.Services.AddScoped<BackendApiAuthHttpClientHandler>();
 builder.Services.AddScoped<IProductService, ProductService>();
 
 
-builder.Services.AddScoped<IMessageBus, MessageBus>();
+//builder.Services.AddScoped<IMessageBus, MessageBus>();
+builder.Services.AddScoped<IRabbitMQOrderMessageSender, RabbitMQOrderMessageSender>();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddHttpClient("Product", u =>

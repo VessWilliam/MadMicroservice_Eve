@@ -8,6 +8,8 @@ using MadMicro.Services.ShoppingCartAPI.Services.IService;
 using MadMicro.Services.ShoppingCartAPI.Services.Service;
 using MadMicro.Services.ShoppingCartAPI.Utility;
 using Microsoft.EntityFrameworkCore;
+using MadMicro.Services.ShoppingCartAPI.RabbitMQSender.IService;
+using MadMicro.Services.ShoppingCartAPI.RabbitMQSender.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
@@ -17,7 +19,8 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<BackendApiAuthHttpClientHandler>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICouponService, CouponService>();
-builder.Services.AddScoped<IMessageBus, MessageBus>();
+//builder.Services.AddScoped<IMessageBus, MessageBus>();
+builder.Services.AddScoped<IRabbitMQShoppingCartMessageSender, RabbitMQShoppingCartMessageSender>();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddHttpClient("Coupon", u =>
