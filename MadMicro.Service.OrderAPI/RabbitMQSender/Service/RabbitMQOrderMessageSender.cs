@@ -19,16 +19,16 @@ public class RabbitMQOrderMessageSender : IRabbitMQOrderMessageSender
         _userName = "guest";
         _passWord = "guest";
     }
-    public async Task SendMessage(object message, string exchangeName)
+    public void SendMessage(object message, string exchangeName)
     {
      
         if(ConnectionExist())
         {
             using var channel = _connection.CreateChannel();
-            await channel.ExchangeDeclareAsync(exchangeName, ExchangeType.Fanout, durable:false);
+            channel.ExchangeDeclare(exchangeName, ExchangeType.Fanout, durable:false);
             var json = JsonConvert.SerializeObject(message);
             var body = Encoding.UTF8.GetBytes(json);
-            await channel.BasicPublishAsync(exchange: exchangeName, routingKey: string.Empty, body: body);
+            channel.BasicPublishAsync(exchange: exchangeName, routingKey: string.Empty, body: body);
         }
        
     }

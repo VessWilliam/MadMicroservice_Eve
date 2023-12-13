@@ -3,6 +3,6 @@
 public interface IRabbitMQOrderMessageSender
 {
 
-     Task SendMessage(object message, string exchangeName);
+     void SendMessage(object message, string exchangeName);
  
 }

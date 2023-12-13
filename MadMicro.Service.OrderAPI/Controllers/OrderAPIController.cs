@@ -27,8 +27,10 @@ namespace MadMicro.Services.OrderAPI.Controllers
         private readonly IMessageBus _messageBus;
         private readonly IRabbitMQOrderMessageSender _rabbitMQSender;
 
-        public OrderAPIController(AppDbContext context, IMapper mapper, IProductService productService, 
-            IConfiguration config, IRabbitMQOrderMessageSender rabbitMQSender)
+        public OrderAPIController(AppDbContext context, IMapper mapper, 
+            IProductService productService, 
+            IConfiguration config, 
+            IRabbitMQOrderMessageSender rabbitMQSender)
         {
             _context = context;
             _mapper = mapper;
@@ -226,7 +228,7 @@ namespace MadMicro.Services.OrderAPI.Controllers
                     };
 
                     string topicName = _config.GetValue<string>("TopicAndQueueNames:OrderCreatedTopic")!;
-                    await _rabbitMQSender.SendMessage(rewardDTO, topicName);
+                    _rabbitMQSender.SendMessage(rewardDTO, topicName);
                     _response.Result = _mapper.Map<OrderHeaderDTO>(orderHeader);
                     _response.IsSuccess = true;
                 }
