@@ -23,6 +23,7 @@ builder.Services.AddSingleton(new EmailService(optionBuilder.Options));
 
 //RabbitMQ
 builder.Services.AddHostedService<RabbitMQAuthConsumer>();
+builder.Services.AddHostedService<RabbitMQOrdersConsumer>();
 builder.Services.AddHostedService<RabbitMQShoppingCartConsumer>();
 
 //Azure Bus

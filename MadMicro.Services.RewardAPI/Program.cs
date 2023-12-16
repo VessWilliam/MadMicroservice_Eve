@@ -25,6 +25,8 @@ builder.Services.AddSingleton(new RewardsService(optionBuilder.Options));
 
 builder.Services.AddSingleton<IAzureServiceBusConsumer, AzureServiceBusConsumer>();
 
+builder.Services.AddHostedService<RabbitMQOrdersConsumer>();
+
 var app = builder.Build();
 
 app.UseSwagger();
